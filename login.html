@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso — Shelfy</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; }
+    .tab {
+      padding: 0.5rem 0;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 1rem;
+      color: #666;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    .tab.active { color: #2563eb; border-bottom-color: #2563eb; font-weight: 600; }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.35rem; color: #333; }
+    input {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #2563eb; }
+    button[type=submit] {
+      width: 100%;
+      padding: 0.7rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      font-weight: 500;
+    }
+    button[type=submit]:hover { background: #1d4ed8; }
+    button[type=submit]:disabled { background: #93c5fd; cursor: not-allowed; }
+    .error {
+      background: #fef2f2;
+      color: #dc2626;
+      padding: 0.6rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>Shelfy</h1>
+  <p class="subtitle">Catálogos para negocios locales</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('login')">Entrar</button>
+    <button class="tab" onclick="showTab('register')">Registrarme</button>
+  </div>
+
+  <div id="error" class="error"></div>
+
+  <!-- Login -->
+  <form id="login-form" onsubmit="handleLogin(event)">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="login-email" required placeholder="mary@tacos.com" />
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="password" id="login-password" required placeholder="••••••••" />
+    </div>
+    <button type="submit" id="login-btn">Entrar</button>
+  </form>
+
+  <!-- Register -->
+  <form id="register-form" class="hidden" onsubmit="handleRegister(event)">
+    <div class="form-group">
+      <label>Nombre del negocio</label>
+      <input type="text" id="reg-name" required placeholder="Tacos Mary" />
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="reg-email" required placeholder="mary@tacos.com" />
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="password" id="reg-password" required placeholder="Mínimo 8 caracteres" />
+    </div>
+    <div class="form-group">
+      <label>WhatsApp (opcional)</label>
+      <input type="text" id="reg-whatsapp" placeholder="+523121234567" />
+    </div>
+    <button type="submit" id="register-btn">Crear cuenta</button>
+  </form>
+</div>
+
+<script src="api.js"></script>
+<script>
+  // Redirigir si ya está loggeado
+  if (isLoggedIn()) window.location.href = "dashboard.html";
+
+  function showTab(tab) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    event.target.classList.add("active");
+    document.getElementById("login-form").classList.toggle("hidden", tab !== "login");
+    document.getElementById("register-form").classList.toggle("hidden", tab !== "register");
+    hideError();
+  }
+
+  function showError(msg) {
+    const el = document.getElementById("error");
+    el.textContent = msg;
+    el.style.display = "block";
+  }
+
+  function hideError() {
+    document.getElementById("error").style.display = "none";
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    hideError();
+    const btn = document.getElementById("login-btn");
+    btn.disabled = true;
+    btn.textContent = "Entrando...";
+    try {
+      await login(
+        document.getElementById("login-email").value,
+        document.getElementById("login-password").value
+      );
+      window.location.href = "dashboard.html";
+    } catch (err) {
+      showError(err.message);
+      btn.disabled = false;
+      btn.textContent = "Entrar";
+    }
+  }
+
+  async function handleRegister(e) {
+    e.preventDefault();
+    hideError();
+    const btn = document.getElementById("register-btn");
+    btn.disabled = true;
+    btn.textContent = "Creando cuenta...";
+    try {
+      await register({
+        name: document.getElementById("reg-name").value,
+        email: document.getElementById("reg-email").value,
+        password: document.getElementById("reg-password").value,
+        whatsapp_number: document.getElementById("reg-whatsapp").value || null,
+      });
+      // Auto-login después de registrar
+      await login(
+        document.getElementById("reg-email").value,
+        document.getElementById("reg-password").value
+      );
+      window.location.href = "dashboard.html";
+    } catch (err) {
+      showError(err.message);
+      btn.disabled = false;
+      btn.textContent = "Crear cuenta";
+    }
+  }
+</script>
+</body>
+</html>
