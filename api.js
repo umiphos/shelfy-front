@@ -1,7 +1,7 @@
-
+// ── Configuración ─────────────────────────────────────────────────────────────
 const API_URL = "https://api.precioinbox.com";
 
-
+// ── Auth helpers ──────────────────────────────────────────────────────────────
 const getToken = () => localStorage.getItem("token");
 const setToken = (t) => localStorage.setItem("token", t);
 const clearToken = () => localStorage.removeItem("token");
@@ -14,7 +14,7 @@ function authHeaders() {
   };
 }
 
-
+// ── Request base ──────────────────────────────────────────────────────────────
 async function request(path, options = {}) {
   const res = await fetch(`${API_URL}${path}`, options);
   if (res.status === 204) return null;
@@ -23,7 +23,7 @@ async function request(path, options = {}) {
   return data;
 }
 
-
+// ── Auth ──────────────────────────────────────────────────────────────────────
 async function register({ name, email, password, whatsapp_number }) {
   return request("/auth/register", {
     method: "POST",
@@ -49,6 +49,7 @@ function logout() {
   window.location.href = "login.html";
 }
 
+// ── Products (privado) ────────────────────────────────────────────────────────
 async function getMyProducts() {
   return request("/products/mine", { headers: authHeaders() });
 }
@@ -83,6 +84,7 @@ async function deleteProduct(id) {
   });
 }
 
+// ── Catalog (público) ─────────────────────────────────────────────────────────
 async function getCatalog(slug) {
   return request(`/catalog/${slug}`);
 }
@@ -93,4 +95,20 @@ async function getCatalogProducts(slug, { category, available_only } = {}) {
   if (available_only) params.set("available_only", "true");
   const qs = params.toString() ? `?${params}` : "";
   return request(`/catalog/${slug}/products${qs}`);
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function getSlugFromToken() {
+  try {
+    const token = getToken();
+    if (!token) return null;
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.slug || null;
+  } catch {
+    return null;
+  }
+}
+
+function catalogURL(slug) {
+  return `https://www.precioinbox.com/catalog.html?slug=${slug}`;
 }

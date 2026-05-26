@@ -3,259 +3,385 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Catálogo — Shelfy</title>
+  <title>PrecioInbox — Tu catálogo, sin complicaciones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #111118;
+      --surface: #16161f;
+      --border: #ffffff0f;
+      --accent: #6ee7b7;
+      --accent2: #34d399;
+      --accent-dim: #6ee7b720;
+      --text: #f0f0f5;
+      --muted: #8888a0;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #fafafa; color: #1a1a1a; }
-
-    /* Header del negocio */
-    .business-header {
-      background: white;
-      border-bottom: 1px solid #eee;
-      padding: 1.5rem;
-      text-align: center;
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-    .business-name { font-size: 1.6rem; font-weight: 700; }
-    .business-desc { color: #666; margin-top: 0.25rem; font-size: 0.95rem; }
-    .business-wa {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-top: 0.75rem;
-      padding: 0.5rem 1rem;
-      background: #22c55e;
-      color: white;
-      border-radius: 999px;
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 100;
     }
-    .business-wa:hover { background: #16a34a; }
-
-    /* Filtros */
-    .filters {
-      max-width: 900px;
-      margin: 1.25rem auto 0;
-      padding: 0 1rem;
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      align-items: center;
+    .glow {
+      position: fixed; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, #6ee7b715 0%, transparent 70%);
+      pointer-events: none; top: -200px; right: -200px; z-index: 0;
     }
-    .filter-btn {
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
-      border: 1px solid #ddd;
-      background: white;
-      cursor: pointer;
-      font-size: 0.82rem;
-      color: #555;
+    .glow2 {
+      position: fixed; width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, #34d39910 0%, transparent 70%);
+      pointer-events: none; bottom: 100px; left: -100px; z-index: 0;
     }
-    .filter-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
-    .filter-available {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.82rem;
-      color: #555;
-      cursor: pointer;
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: #0a0a0fcc;
+      backdrop-filter: blur(12px);
     }
-
-    /* Products */
-    main { max-width: 900px; margin: 1.25rem auto; padding: 0 1rem 2rem; }
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1rem;
+    .nav-logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem;
+      letter-spacing: -0.03em; color: var(--text); text-decoration: none;
     }
-    .product-card {
-      background: white;
-      border-radius: 10px;
-      border: 1px solid #eee;
-      overflow: hidden;
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.88rem;
+      font-weight: 500; transition: color 0.2s;
     }
-    .product-img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      background: #f0f0f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #bbb;
-      font-size: 0.8rem;
+    .nav-links a:hover { color: var(--text); }
+    .btn-nav {
+      padding: 0.5rem 1.1rem; background: var(--accent-dim); color: var(--accent);
+      border: 1px solid #6ee7b740; border-radius: 6px; font-size: 0.85rem;
+      font-weight: 600; text-decoration: none; transition: all 0.2s;
     }
-    .product-img img { width: 100%; height: 100%; object-fit: cover; }
-    .product-body { padding: 0.9rem; }
-    .product-name { font-weight: 600; font-size: 0.95rem; }
-    .product-desc { font-size: 0.82rem; color: #777; margin-top: 0.2rem; }
-    .product-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 0.75rem;
+    .btn-nav:hover { background: var(--accent); color: var(--bg); }
+    .hero {
+      position: relative; z-index: 1; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center; padding: 8rem 1.5rem 4rem;
     }
-    .product-price { font-size: 1.15rem; font-weight: 700; color: #2563eb; }
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 600;
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.35rem 0.9rem; background: var(--accent-dim);
+      border: 1px solid #6ee7b730; border-radius: 999px;
+      font-size: 0.78rem; font-weight: 500; color: var(--accent);
+      margin-bottom: 2rem; letter-spacing: 0.05em; text-transform: uppercase;
+      opacity: 0; animation: fadeUp 0.6s ease forwards;
     }
-    .badge-available { background: #dcfce7; color: #16a34a; }
-    .badge-unavailable { background: #fee2e2; color: #dc2626; }
-
-    /* Empty / error */
-    .message {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #888;
-      grid-column: 1 / -1;
+    .hero-tag::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s ease infinite;
     }
-
-    /* Footer */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2.8rem, 7vw, 5.5rem); line-height: 1.05;
+      letter-spacing: -0.04em; margin-bottom: 1.5rem; max-width: 800px;
+      opacity: 0; animation: fadeUp 0.6s ease 0.15s forwards;
+    }
+    h1 em { font-style: normal; color: var(--accent); }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--muted);
+      max-width: 520px; line-height: 1.65; margin-bottom: 2.5rem;
+      font-weight: 300; opacity: 0; animation: fadeUp 0.6s ease 0.3s forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      opacity: 0; animation: fadeUp 0.6s ease 0.45s forwards;
+    }
+    .btn-primary {
+      padding: 0.85rem 2rem; background: var(--accent); color: var(--bg);
+      border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 700;
+      text-decoration: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-primary:hover {
+      background: var(--accent2); transform: translateY(-1px);
+      box-shadow: 0 8px 30px #6ee7b730;
+    }
+    .btn-secondary {
+      padding: 0.85rem 2rem; background: transparent; color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem;
+      font-weight: 500; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      border-color: #6ee7b750; background: var(--accent-dim); color: var(--accent);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .demo-wrap {
+      position: relative; z-index: 1; max-width: 860px;
+      margin: 5rem auto 0; padding: 0 1.5rem;
+      opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+    .demo-bar {
+      background: var(--surface); border: 1px solid var(--border);
+      border-bottom: none; border-radius: 10px 10px 0 0;
+      padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-screen {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 0 0 10px 10px; padding: 1.5rem;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;
+    }
+    .demo-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem; transition: border-color 0.2s;
+    }
+    .demo-card:hover { border-color: #6ee7b740; }
+    .demo-card-img {
+      width: 100%; height: 80px;
+      background: linear-gradient(135deg, #1a1a28, #0f0f1a);
+      border-radius: 5px; margin-bottom: 0.6rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+    }
+    .demo-card-name { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .demo-card-price { font-size: 0.95rem; font-weight: 700; color: var(--accent); }
+    .demo-badge {
+      display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 600; background: #6ee7b720;
+      color: var(--accent); float: right; margin-top: 0.1rem;
+    }
+    .section {
+      position: relative; z-index: 1; max-width: 1000px;
+      margin: 8rem auto; padding: 0 1.5rem;
+    }
+    .section-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -0.03em;
+      margin-bottom: 1rem; max-width: 500px;
+    }
+    .section-sub {
+      color: var(--muted); font-size: 1rem; line-height: 1.65;
+      max-width: 440px; font-weight: 300; margin-bottom: 3rem;
+    }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    }
+    .feature { background: var(--bg); padding: 2rem; transition: background 0.2s; }
+    .feature:hover { background: var(--surface); }
+    .feature-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+    .feature-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem; }
+    .feature-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.6; font-weight: 300; }
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 2rem; margin-top: 3rem;
+    }
+    .step-num {
+      font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800;
+      color: #6ee7b720; line-height: 1; margin-bottom: 0.75rem;
+    }
+    .step-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; }
+    .step-desc { color: var(--muted); font-size: 0.85rem; line-height: 1.6; font-weight: 300; }
+    .chat-demo {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem; max-width: 360px;
+    }
+    .chat-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .chat-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent-dim); display: flex; align-items: center;
+      justify-content: center; font-size: 1rem;
+    }
+    .chat-name { font-size: 0.88rem; font-weight: 600; }
+    .chat-status { font-size: 0.72rem; color: var(--accent); }
+    .chat-msg { margin-bottom: 0.75rem; display: flex; flex-direction: column; }
+    .chat-msg.out { align-items: flex-end; }
+    .chat-msg.in { align-items: flex-start; }
+    .bubble { padding: 0.5rem 0.8rem; border-radius: 10px; font-size: 0.82rem; line-height: 1.5; max-width: 80%; }
+    .chat-msg.out .bubble { background: var(--accent); color: var(--bg); font-weight: 500; }
+    .chat-msg.in .bubble { background: var(--bg2); color: var(--text); border: 1px solid var(--border); }
+    .cta { position: relative; z-index: 1; text-align: center; padding: 6rem 1.5rem; border-top: 1px solid var(--border); }
+    .cta h2 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.04em; margin-bottom: 1rem;
+    }
+    .cta p { color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem; font-weight: 300; }
     footer {
-      text-align: center;
-      padding: 1.5rem;
-      font-size: 0.78rem;
-      color: #aaa;
-      border-top: 1px solid #eee;
-      margin-top: 2rem;
+      position: relative; z-index: 1; border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem; display: flex; align-items: center;
+      justify-content: space-between; font-size: 0.78rem; color: var(--muted);
     }
-    footer a { color: #2563eb; text-decoration: none; }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+    @media (max-width: 640px) {
+      nav { padding: 1rem; }
+      .nav-links a:not(.btn-nav) { display: none; }
+      .demo-screen { grid-template-columns: 1fr 1fr; }
+      .demo-card:last-child { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .chat-demo { max-width: 100%; }
+    }
   </style>
 </head>
 <body>
+<div class="glow"></div>
+<div class="glow2"></div>
 
-<div class="business-header">
-  <div class="business-name" id="biz-name">Cargando...</div>
-  <div class="business-desc" id="biz-desc"></div>
-  <div id="biz-wa"></div>
-</div>
-
-<div class="filters" id="filters" style="display:none">
-  <button class="filter-btn active" data-cat="" onclick="filterCategory(this, '')">Todos</button>
-  <label class="filter-available">
-    <input type="checkbox" id="chk-available" onchange="filterCategory(null, currentCategory)" />
-    Solo disponibles
-  </label>
-</div>
-
-<main>
-  <div class="products-grid" id="products-grid">
-    <div class="message">Cargando catálogo...</div>
+<nav>
+  <a href="/" class="nav-logo">Precio<span>Inbox</span></a>
+  <div class="nav-links">
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#features">Características</a>
+    <a href="login.html" class="btn-nav">Entrar →</a>
   </div>
-</main>
+</nav>
 
-<footer>
-  Potenciado por <a href="login.html">Shelfy</a> — catálogos para negocios locales
-</footer>
+<section class="hero">
+  <div class="hero-tag">Catálogos para negocios locales</div>
+  <h1>Tu catálogo,<br /><em>sin complicaciones</em></h1>
+  <p class="hero-sub">Crea tu página de productos en minutos. Actualiza precios y disponibilidad directo desde WhatsApp o Messenger — sin apps, sin técnicos.</p>
+  <div class="hero-actions">
+    <a href="login.html" class="btn-primary">Crear mi catálogo gratis</a>
+    <a href="#como-funciona" class="btn-secondary">Ver cómo funciona</a>
+  </div>
+  <div class="demo-wrap">
+    <div class="demo-bar">
+      <div class="demo-dot" style="background:#ff5f56"></div>
+      <div class="demo-dot" style="background:#ffbd2e"></div>
+      <div class="demo-dot" style="background:#27c93f"></div>
+      <span style="font-size:0.75rem;color:#555;margin-left:0.5rem">precioinbox.com/catalog/tacos-mary</span>
+    </div>
+    <div class="demo-screen">
+      <div class="demo-card">
+        <div class="demo-card-img">🌮</div>
+        <div class="demo-card-name">Taco de Canasta</div>
+        <div class="demo-card-price">$15.00 <span class="demo-badge">✓ Disponible</span></div>
+      </div>
+      <div class="demo-card">
+        <div class="demo-card-img">🥤</div>
+        <div class="demo-card-name">Agua de Jamaica</div>
+        <div class="demo-card-price">$12.00 <span class="demo-badge">✓ Disponible</span></div>
+      </div>
+      <div class="demo-card">
+        <div class="demo-card-img">🍮</div>
+        <div class="demo-card-name">Flan Napolitano</div>
+        <div class="demo-card-price">$25.00 <span class="demo-badge">✓ Disponible</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<script src="api.js"></script>
-<script>
-  // El slug viene de la URL: /index.html?slug=tacos-mary
-  // O directamente: /tacos-mary (requiere server config)
-  const params = new URLSearchParams(window.location.search);
-  const slug = params.get("slug") || window.location.pathname.split("/").filter(Boolean).pop();
-
-  let currentCategory = "";
-  let allProducts = [];
-  let categories = [];
-
-  async function init() {
-    if (!slug || slug === "index.html") {
-      document.getElementById("biz-name").textContent = "Catálogo no encontrado";
-      document.getElementById("products-grid").innerHTML =
-        `<div class="message">Usa ?slug=nombre-del-negocio en la URL</div>`;
-      return;
-    }
-
-    try {
-      const [biz, products] = await Promise.all([
-        getCatalog(slug),
-        getCatalogProducts(slug),
-      ]);
-
-      // Header del negocio
-      document.title = `${biz.name} — Shelfy`;
-      document.getElementById("biz-name").textContent = biz.name;
-      document.getElementById("biz-desc").textContent = biz.description || "";
-      if (biz.whatsapp_number) {
-        const num = biz.whatsapp_number.replace(/\D/g, "");
-        document.getElementById("biz-wa").innerHTML =
-          `<a class="business-wa" href="https://wa.me/${num}" target="_blank">
-            📱 Pedir por WhatsApp
-          </a>`;
-      }
-
-      allProducts = products;
-
-      // Categorías únicas
-      categories = [...new Set(products.map(p => p.category).filter(Boolean))];
-      if (categories.length > 1) {
-        const filters = document.getElementById("filters");
-        filters.style.display = "flex";
-        categories.forEach(cat => {
-          const btn = document.createElement("button");
-          btn.className = "filter-btn";
-          btn.textContent = cat;
-          btn.dataset.cat = cat;
-          btn.onclick = () => filterCategory(btn, cat);
-          filters.insertBefore(btn, filters.querySelector(".filter-available"));
-        });
-      }
-
-      renderProducts(products);
-    } catch (e) {
-      document.getElementById("biz-name").textContent = "Negocio no encontrado";
-      document.getElementById("products-grid").innerHTML =
-        `<div class="message">Este catálogo no existe o no está disponible.</div>`;
-    }
-  }
-
-  function filterCategory(btn, cat) {
-    currentCategory = cat;
-    if (btn) {
-      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-    }
-    const availableOnly = document.getElementById("chk-available").checked;
-    let filtered = allProducts;
-    if (cat) filtered = filtered.filter(p => p.category === cat);
-    if (availableOnly) filtered = filtered.filter(p => p.available);
-    renderProducts(filtered);
-  }
-
-  function renderProducts(products) {
-    const grid = document.getElementById("products-grid");
-    if (!products.length) {
-      grid.innerHTML = `<div class="message">Sin productos en esta categoría.</div>`;
-      return;
-    }
-    grid.innerHTML = products.map(p => `
-      <div class="product-card">
-        <div class="product-img">
-          ${p.image_url
-            ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.parentElement.textContent='Sin imagen'" />`
-            : "Sin imagen"}
-        </div>
-        <div class="product-body">
-          <div class="product-name">${p.name}</div>
-          ${p.description ? `<div class="product-desc">${p.description}</div>` : ""}
-          <div class="product-footer">
-            <span class="product-price">$${parseFloat(p.price).toFixed(2)}</span>
-            <span class="badge ${p.available ? "badge-available" : "badge-unavailable"}">
-              ${p.available ? "Disponible" : "Agotado"}
-            </span>
-          </div>
+<section class="section" id="como-funciona">
+  <div class="section-label">Proceso</div>
+  <h2 class="section-title">Tres pasos y listo</h2>
+  <p class="section-sub">Sin necesidad de saber de tecnología. Si sabes usar WhatsApp, sabes usar PrecioInbox.</p>
+  <div style="display:flex;gap:3rem;flex-wrap:wrap;align-items:flex-start">
+    <div class="steps" style="flex:1;min-width:280px">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Registra tu negocio</div>
+        <div class="step-desc">Crea tu cuenta en segundos. Tu catálogo queda disponible en una URL única que puedes compartir.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Agrega tus productos</div>
+        <div class="step-desc">Desde el panel web o directamente por WhatsApp o Messenger. Nombre, precio y listo.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Comparte tu catálogo</div>
+        <div class="step-desc">Pega el link en tu bio de Instagram, Facebook o mándalo por WhatsApp. Tus clientes ven precios actualizados al momento.</div>
+      </div>
+    </div>
+    <div class="chat-demo">
+      <div class="chat-header">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-name">PrecioInbox Bot</div>
+          <div class="chat-status">● en línea</div>
         </div>
       </div>
-    `).join("");
-  }
+      <div class="chat-msg out"><div class="bubble">agregar Taco de canasta 15</div></div>
+      <div class="chat-msg in"><div class="bubble">✅ Producto agregado:<br/><strong>Taco De Canasta</strong> — $15.00</div></div>
+      <div class="chat-msg out"><div class="bubble">agotado 1</div></div>
+      <div class="chat-msg in"><div class="bubble">🔴 agotado: <strong>Taco De Canasta</strong></div></div>
+      <div class="chat-msg out"><div class="bubble">mis productos</div></div>
+      <div class="chat-msg in"><div class="bubble">📋 <strong>Tus productos:</strong><br/>1. 🔴 Taco de Canasta — $15.00<br/>2. 🟢 Agua de Jamaica — $12.00</div></div>
+    </div>
+  </div>
+</section>
 
-  init();
-</script>
+<section class="section" id="features">
+  <div class="section-label">Características</div>
+  <h2 class="section-title">Todo lo que necesitas</h2>
+  <p class="section-sub">Sin apps que descargar. Sin mensualidades ocultas. Sin complicaciones.</p>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-icon">📱</div>
+      <div class="feature-title">Actualiza por WhatsApp</div>
+      <div class="feature-desc">Manda un mensaje y tu catálogo se actualiza al instante. Tan fácil como hablar con un amigo.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔗</div>
+      <div class="feature-title">URL única y compartible</div>
+      <div class="feature-desc">Cada negocio tiene su propia página pública. Compártela en redes, WhatsApp o donde quieras.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Disponibilidad en tiempo real</div>
+      <div class="feature-desc">Marca productos como agotados con un mensaje. Tus clientes siempre ven lo que realmente tienes.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">💬</div>
+      <div class="feature-title">WhatsApp y Messenger</div>
+      <div class="feature-desc">Usa el canal que ya tienes. El bot funciona en ambas plataformas sin configuración extra.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🗂️</div>
+      <div class="feature-title">Categorías y filtros</div>
+      <div class="feature-desc">Tus clientes pueden filtrar por categoría o ver solo lo disponible. Experiencia limpia y ordenada.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">Seguro y privado</div>
+      <div class="feature-desc">Solo tú puedes editar tu catálogo. Tu información nunca se comparte con terceros.</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>¿Listo para ordenar<br/>tu negocio?</h2>
+  <p>Gratis. Sin tarjeta de crédito. En menos de 5 minutos.</p>
+  <a href="login.html" class="btn-primary" style="font-size:1rem;padding:1rem 2.5rem">Crear mi catálogo →</a>
+</section>
+
+<footer>
+  <span>© 2026 PrecioInbox</span>
+  <div style="display:flex;gap:1.5rem">
+    <a href="login.html">Entrar</a>
+    <a href="login.html">Registrarse</a>
+  </div>
+</footer>
 </body>
 </html>

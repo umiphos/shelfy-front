@@ -228,12 +228,15 @@
 
   async function init() {
     try {
-      const products = await getMyProducts();
-      // Obtener slug del primer producto o del perfil
-      // Por ahora lo extraemos del token (payload)
-      const token = getToken();
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      // El slug lo cargamos desde el catálogo — hacemos un call al health y usamos el business
+      const [products, me] = await Promise.all([
+        getMyProducts(),
+        request("/auth/me", { headers: authHeaders() }),
+      ]);
+
+      // Mostrar link al catálogo en el nav
+      document.getElementById("nav-slug").innerHTML =
+        `Mi catálogo: <a href="catalog.html?slug=${me.slug}" target="_blank">/${me.slug}</a>`;
+
       renderProducts(products);
     } catch (e) {
       showToast(e.message);
