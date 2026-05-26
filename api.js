@@ -1,5 +1,5 @@
 
-const API_URL = "https://shelfy-jlr2.onrender.com";
+const API_URL = "https://api.precioinbox.com";
 
 
 const getToken = () => localStorage.getItem("token");
