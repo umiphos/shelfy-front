@@ -1,28 +1,16 @@
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Registro from './pages/Registro'
+import Login from './pages/Login'
 
 function App() {
-  const [page, setPage] = useState('registro')
-
   return (
-    <main>
-      {page === 'registro' && (
-        <section>
-          <h1>Registro</h1>
-          <button onClick={() => setPage('login')}>
-            Ir a login
-          </button>
-        </section>
-      )}
-
-      {page === 'login' && (
-        <section>
-          <h1>Login</h1>
-          <button onClick={() => setPage('registro')}>
-            Volver a registro
-          </button>
-        </section>
-      )}
-    </main>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/registro" element={<Registro />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Navigate to="/registro" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
