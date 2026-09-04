@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+
 function Registro() {
   const [message, setMessage] = useState('')
   const [success, setSuccess] = useState(false)
+
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -31,22 +33,33 @@ function Registro() {
       const data = await response.json()
 
       if (!response.ok) {
-        setMessage(data.detail || 'No fue posible crear la cuenta.')
+        setMessage(
+          data.detail ||
+            'No fue posible crear la cuenta.',
+        )
+
         return
       }
 
       setSuccess(true)
       setMessage('Cuenta creada correctamente.')
+
       event.target.reset()
     } catch {
-      setMessage('No se pudo conectar con el servidor.')
+      setMessage(
+        'No se pudo conectar con el servidor.',
+      )
     }
   }
+
 
   return (
     <main>
       <h1>Crear cuenta</h1>
-      <p>Regístrate para crear tu catálogo.</p>
+
+      <p>
+        Regístrate para crear tu catálogo.
+      </p>
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -101,5 +114,6 @@ function Registro() {
     </main>
   )
 }
+
 
 export default Registro
