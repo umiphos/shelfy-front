@@ -167,13 +167,25 @@ function ProductoForm() {
 
         formData.append('file', image)
 
-        await fetch(
+        const imageResponse = await fetch(
           `http://127.0.0.1:8000/api/products/${data.id}/images`,
           {
             method: 'POST',
             body: formData,
           },
         )
+
+        if (!imageResponse.ok) {
+          const imageData =
+            await imageResponse.json()
+
+          setMessage(
+            imageData.detail ||
+              'No se pudo subir una de las imágenes.',
+          )
+
+          return
+        }
       }
 
       navigate('/productos')
@@ -335,14 +347,43 @@ function ProductoForm() {
             <div>
               <p>Imágenes actuales:</p>
 
-              {existingImages.map((image) => (
+            {existingImages.map((image) => (
+              <div key={image.id}>
                 <img
-                  key={image.id}
                   src={`http://127.0.0.1:8000${image.url}`}
                   alt=""
                   width="150"
                 />
-              ))}
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const response = await fetch(
+                      `http://127.0.0.1:8000/api/products/images/${image.id}`,
+                      {
+                        method: 'DELETE',
+                      },
+                    )
+
+                    if (!response.ok) {
+                      setImageMessage(
+                        'No se pudo eliminar la imagen.',
+                      )
+
+                      return
+                    }
+
+                    setExistingImages(
+                      existingImages.filter(
+                        (item) => item.id !== image.id,
+                      ),
+                    )
+                  }}
+                >
+                  Eliminar imagen
+                </button>
+              </div>
+            ))}
             </div>
           )}
           <input
@@ -355,9 +396,11 @@ function ProductoForm() {
                 event.target.files,
               )
 
-              if (selected.length > 5) {
+              if (
+                existingImages.length + selected.length > 5
+              ) {
                 setImageMessage(
-                  'Puedes seleccionar máximo 5 imágenes.',
+                  `El producto puede tener máximo 5 imágenes. Actualmente tienes ${existingImages.length}.`,
                 )
 
                 return
