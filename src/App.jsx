@@ -11,6 +11,7 @@ import Panel from './pages/Panel'
 import Productos from './pages/Productos'
 import ProductoForm from './pages/ProductoForm'
 import Producto from './pages/Producto'
+import Catalogo from './pages/Catalogo'
 
 
 function App() {
@@ -60,6 +61,11 @@ function App() {
         <Route
           path="/productos/:productId"
           element={<Producto />}
+        />
+
+        <Route
+          path="/catalogo/:catalogId"
+          element={<Catalogo />}
         />
       </Routes>
     </BrowserRouter>
