@@ -64,7 +64,7 @@ function App() {
         />
 
         <Route
-          path="/catalogo/:catalogId"
+          path="/catalogo/:slug"
           element={<Catalogo />}
         />
       </Routes>

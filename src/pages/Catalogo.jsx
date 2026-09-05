@@ -6,8 +6,7 @@ import {
 
 
 function Catalogo() {
-  const { catalogId } = useParams()
-
+  const { slug } = useParams()
   const [catalog, setCatalog] = useState(null)
   const [products, setProducts] = useState([])
   const [images, setImages] = useState({})
@@ -19,7 +18,7 @@ function Catalogo() {
     async function loadCatalog() {
       try {
         const catalogResponse = await fetch(
-          `http://127.0.0.1:8000/api/catalogs/${catalogId}`,
+          `http://127.0.0.1:8000/api/catalogs/public/${slug}`,
         )
 
         if (!catalogResponse.ok) {
@@ -44,7 +43,7 @@ function Catalogo() {
         setCatalog(catalogData)
 
         const productsResponse = await fetch(
-          `http://127.0.0.1:8000/api/products/${catalogId}`,
+          `http://127.0.0.1:8000/api/products/${catalogData.id}`,
         )
 
         if (!productsResponse.ok) {
@@ -86,7 +85,7 @@ function Catalogo() {
     }
 
     loadCatalog()
-  }, [catalogId])
+  }, [slug])
 
 
   if (loading) {

@@ -186,6 +186,11 @@ function Panel() {
               Ver productos
             </Link>
           </p>
+          <p>
+            <Link to={`/catalogo/${catalog.slug}`}>
+              Ver mi catálogo
+            </Link>
+          </p>
         </>
       )}
 
