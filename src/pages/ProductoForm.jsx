@@ -30,6 +30,7 @@ function ProductoForm() {
   const [saving, setSaving] = useState(false)
   const [images, setImages] = useState([])
   const [imageMessage, setImageMessage] = useState('')
+  const [existingImages, setExistingImages] = useState([])
 
   useEffect(() => {
     const storedUser =
@@ -74,6 +75,14 @@ function ProductoForm() {
                 shipping: product.shipping,
                 whatsapp: product.whatsapp || '',
               })
+
+              return fetch(
+                `http://127.0.0.1:8000/api/products/${productId}/images`,
+              )
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              setExistingImages(data)
             })
         }
       })
@@ -322,7 +331,20 @@ function ProductoForm() {
           <label htmlFor="images">
             Imágenes
           </label>
+          {existingImages.length > 0 && (
+            <div>
+              <p>Imágenes actuales:</p>
 
+              {existingImages.map((image) => (
+                <img
+                  key={image.id}
+                  src={`http://127.0.0.1:8000${image.url}`}
+                  alt=""
+                  width="150"
+                />
+              ))}
+            </div>
+          )}
           <input
             id="images"
             type="file"
