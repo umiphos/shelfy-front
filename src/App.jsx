@@ -10,6 +10,7 @@ import Login from './pages/Login'
 import Panel from './pages/Panel'
 import Productos from './pages/Productos'
 import ProductoForm from './pages/ProductoForm'
+import Producto from './pages/Producto'
 
 
 function App() {
@@ -54,6 +55,11 @@ function App() {
               replace
             />
           }
+        />
+
+        <Route
+          path="/productos/:productId"
+          element={<Producto />}
         />
       </Routes>
     </BrowserRouter>
