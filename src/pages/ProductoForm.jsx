@@ -28,7 +28,8 @@ function ProductoForm() {
 
   const [message, setMessage] = useState('')
   const [saving, setSaving] = useState(false)
-
+  const [images, setImages] = useState([])
+  const [imageMessage, setImageMessage] = useState('')
 
   useEffect(() => {
     const storedUser =
@@ -150,6 +151,20 @@ function ProductoForm() {
         )
 
         return
+      }
+
+      for (const image of images) {
+        const formData = new FormData()
+
+        formData.append('file', image)
+
+        await fetch(
+          `http://127.0.0.1:8000/api/products/${data.id}/images`,
+          {
+            method: 'POST',
+            body: formData,
+          },
+        )
       }
 
       navigate('/productos')
@@ -301,6 +316,47 @@ function ProductoForm() {
             value={form.whatsapp}
             onChange={handleChange}
           />
+        </div>
+
+        <div>
+          <label htmlFor="images">
+            Imágenes
+          </label>
+
+          <input
+            id="images"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+            onChange={(event) => {
+              const selected = Array.from(
+                event.target.files,
+              )
+
+              if (selected.length > 5) {
+                setImageMessage(
+                  'Puedes seleccionar máximo 5 imágenes.',
+                )
+
+                return
+              }
+
+              setImageMessage('')
+              setImages(selected)
+            }}
+          />
+
+          {images.length > 0 && (
+            <p>
+              {images.length} imagen(es) seleccionada(s)
+            </p>
+          )}
+
+          {imageMessage && (
+            <p>
+              {imageMessage}
+            </p>
+          )}
         </div>
 
         {message && (

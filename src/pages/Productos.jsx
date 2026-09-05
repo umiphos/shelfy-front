@@ -12,7 +12,7 @@ function Productos() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
-
+  const [images, setImages] = useState({})
 
   useEffect(() => {
     const storedUser =
@@ -48,6 +48,7 @@ function Productos() {
       .then((data) => {
         if (data) {
           setProducts(data)
+          loadImages(data)
         }
       })
       .catch(() => {
@@ -60,6 +61,26 @@ function Productos() {
       })
   }, [navigate])
 
+
+async function loadImages(products) {
+  const imageMap = {}
+
+  for (const product of products) {
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/products/${product.id}/images`,
+    )
+
+    if (!response.ok) {
+      continue
+    }
+
+    const data = await response.json()
+
+    imageMap[product.id] = data
+  }
+
+  setImages(imageMap)
+  }
 
   async function handleDelete(productId) {
     const response = await fetch(
@@ -124,6 +145,13 @@ function Productos() {
         <div>
           {products.map((product) => (
             <article key={product.id}>
+              {images[product.id]?.length > 0 && (
+                <img
+                  src={`http://127.0.0.1:8000${images[product.id][0].url}`}
+                  alt={product.name}
+                  width="200"
+                />
+              )}
               <h2>{product.name}</h2>
 
               <p>
