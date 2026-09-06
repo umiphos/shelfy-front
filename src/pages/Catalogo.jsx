@@ -115,13 +115,19 @@ function Catalogo() {
     <main>
       <h1>{catalog.name}</h1>
 
-      {products.length === 0 ? (
+      {products.filter(
+        (product) => product.status !== 'hidden',
+      ).length === 0 ? (
         <p>
-          Este catálogo todavía no tiene productos.
+          Este catálogo todavía no tiene productos publicados.
         </p>
       ) : (
         <div>
-          {products.map((product) => (
+        {products
+          .filter(
+            (product) => product.status !== 'hidden',
+          )
+          .map((product) => (
             <article key={product.id}>
               {images[product.id]?.length > 0 && (
                 <img
@@ -133,9 +139,11 @@ function Catalogo() {
 
               <h2>{product.name}</h2>
 
-              <p>
-                ${product.price}
-              </p>
+              {product.status === 'sold_out' && (
+                <p>
+                  Agotado
+                </p>
+              )}
 
               <Link
                 to={`/productos/${product.id}`}

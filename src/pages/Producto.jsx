@@ -107,8 +107,19 @@ function Producto() {
         </div>
       )}
 
+      {product.status === 'sold_out' && (
+        <p>
+          Agotado
+        </p>
+      )}
+
       <p>
-        Precio: ${product.price}
+        Estado:{' '}
+        {product.status === 'available'
+          ? 'Disponible'
+          : product.status === 'sold_out'
+            ? 'Agotado'
+            : 'Oculto'}
       </p>
 
       <p>

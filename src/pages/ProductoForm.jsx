@@ -18,6 +18,8 @@ function ProductoForm() {
     price: '',
     category: '',
     quantity: '',
+    status: 'available',
+
     description: '',
     characteristics: '',
     color: '',
@@ -66,6 +68,7 @@ function ProductoForm() {
                 price: product.price,
                 category: product.category,
                 quantity: product.quantity,
+                status: product.status || 'available',
                 description:
                   product.description || '',
                 characteristics:
@@ -128,6 +131,7 @@ function ProductoForm() {
       price: Number(form.price),
       category: form.category,
       quantity: Number(form.quantity),
+      status: form.status,
       description: form.description || null,
       characteristics:
         form.characteristics || null,
@@ -258,12 +262,37 @@ function ProductoForm() {
           <input
             name="quantity"
             type="number"
-            min="0"
+            min="1"
             step="1"
             value={form.quantity}
             onChange={handleChange}
             required
           />
+        </div>
+
+        <div>
+          <label htmlFor="status">
+            Estado
+          </label>
+
+          <select
+          id="status"
+          name="status"
+          value={form.status}
+          onChange={handleChange}
+          >
+            <option value="available">
+              Disponible
+            </option>
+
+            <option value="sold_out">
+              Agotado
+            </option>
+
+            <option value="hidden">
+              Oculto
+            </option>
+          </select>
         </div>
 
         <div>
