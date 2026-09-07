@@ -54,63 +54,86 @@ function Registro() {
 
 
   return (
-    <main>
-      <h1>Crear cuenta</h1>
+    <main className="auth-page">
+      <section className="auth-card">
+        <div className="auth-header">
+          <span className="brand">CATÁLOGO</span>
 
-      <p>
-        Regístrate para crear tu catálogo.
-      </p>
+          <h1>Crear cuenta</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">
-            Correo electrónico
-          </label>
-
-          <input
-            id="email"
-            type="email"
-            name="email"
-            required
-          />
+          <p>
+            Crea tu cuenta y comienza tu catálogo.
+          </p>
         </div>
 
-        <div>
-          <label htmlFor="password">
-            Contraseña
-          </label>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="email">
+              Correo electrónico
+            </label>
 
-          <input
-            id="password"
-            type="password"
-            name="password"
-            minLength="5"
-            required
-          />
+            <input
+              id="email"
+              type="email"
+              name="email"
+              autoComplete="email"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password">
+              Contraseña
+            </label>
+
+            <input
+              id="password"
+              type="password"
+              name="password"
+              minLength="5"
+              autoComplete="new-password"
+              required
+            />
+
+            <small className="field-help">
+              Mínimo 5 caracteres.
+            </small>
+          </div>
+
+          {message && (
+            <p className="message">
+              {message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="primary-button"
+          >
+            Crear cuenta
+          </button>
+        </form>
+
+        {success && (
+          <div className="success-box">
+            <p>
+              Cuenta creada correctamente.
+            </p>
+
+            <Link to="/login">
+              Iniciar sesión
+            </Link>
+          </div>
+        )}
+
+        <div className="auth-footer">
+          <span>¿Ya tienes una cuenta?</span>
+
+          <Link to="/login">
+            Iniciar sesión
+          </Link>
         </div>
-
-        <button type="submit">
-          Crear cuenta
-        </button>
-      </form>
-
-      {message && (
-        <p>
-          {message}
-        </p>
-      )}
-
-      {success && (
-        <Link to="/login">
-          Iniciar sesión
-        </Link>
-      )}
-
-      <br />
-
-      <Link to="/login">
-        Ya tengo una cuenta
-      </Link>
+      </section>
     </main>
   )
 }

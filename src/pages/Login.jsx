@@ -62,54 +62,69 @@ function Login() {
 
 
   return (
-    <main>
-      <h1>Iniciar sesión</h1>
+    <main className="auth-page">
+      <section className="auth-card">
+        <div className="auth-header">
+          <span className="brand">CATÁLOGO</span>
 
-      <p>
-        Accede a tu catálogo.
-      </p>
+          <h1>Bienvenido</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">
-            Correo electrónico
-          </label>
-
-          <input
-            id="email"
-            type="email"
-            name="email"
-            required
-          />
+          <p>
+            Inicia sesión para administrar tu catálogo.
+          </p>
         </div>
 
-        <div>
-          <label htmlFor="password">
-            Contraseña
-          </label>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="email">
+              Correo electrónico
+            </label>
 
-          <input
-            id="password"
-            type="password"
-            name="password"
-            required
-          />
+            <input
+              id="email"
+              type="email"
+              name="email"
+              autoComplete="email"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password">
+              Contraseña
+            </label>
+
+            <input
+              id="password"
+              type="password"
+              name="password"
+              autoComplete="current-password"
+              required
+            />
+          </div>
+
+          {message && (
+            <p className="message">
+              {message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="primary-button"
+          >
+            Iniciar sesión
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <span>¿Todavía no tienes una cuenta?</span>
+
+          <Link to="/registro">
+            Crear una cuenta
+          </Link>
         </div>
-
-        <button type="submit">
-          Iniciar sesión
-        </button>
-      </form>
-
-      {message && (
-        <p>
-          {message}
-        </p>
-      )}
-
-      <Link to="/registro">
-        Crear una cuenta
-      </Link>
+      </section>
     </main>
   )
 }
