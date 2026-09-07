@@ -16,7 +16,7 @@ function ProductoForm() {
   const [form, setForm] = useState({
     name: '',
     price: '',
-    category: '',
+    category_id: '',
     quantity: '',
     status: 'available',
 
@@ -33,6 +33,8 @@ function ProductoForm() {
   const [images, setImages] = useState([])
   const [imageMessage, setImageMessage] = useState('')
   const [existingImages, setExistingImages] = useState([])
+  const [categories, setCategories] = useState([])
+
 
   useEffect(() => {
     const storedUser =
@@ -45,6 +47,18 @@ function ProductoForm() {
 
     const user = JSON.parse(storedUser)
 
+    fetch(
+      'http://127.0.0.1:8000/api/categories',
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setCategories(data)
+      })
+      .catch(() => {
+        setMessage(
+          'No se pudieron cargar las categorías.',
+        )
+    })
     fetch(
       `http://127.0.0.1:8000/api/catalogs/${user.id}`,
     )
@@ -66,7 +80,7 @@ function ProductoForm() {
               setForm({
                 name: product.name,
                 price: product.price,
-                category: product.category,
+                category_id: product.category_id,
                 quantity: product.quantity,
                 status: product.status || 'available',
                 description:
@@ -129,7 +143,7 @@ function ProductoForm() {
       catalog_id: catalog.id,
       name: form.name,
       price: Number(form.price),
-      category: form.category,
+      category_id: Number(form.category_id),
       quantity: Number(form.quantity),
       status: form.status,
       description: form.description || null,
@@ -242,16 +256,35 @@ function ProductoForm() {
         </div>
 
         <div>
-          <label>
+          <label htmlFor="category">
             Categoría
           </label>
 
-          <input
-            name="category"
-            value={form.category}
-            onChange={handleChange}
+          <select
+            id="category"
+            name="category_id"
+            value={form.category_id}
+            onChange={(event) =>
+              setForm({
+                ...form,
+                category_id: event.target.value,
+              })
+            }
             required
-          />
+          >
+            <option value="">
+              Selecciona una categoría
+            </option>
+
+            {categories.map((category) => (
+              <option
+                key={category.id}
+                value={category.id}
+              >
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

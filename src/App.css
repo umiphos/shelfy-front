@@ -1,3 +1,169 @@
+#root {
+  min-height: 100vh;
+}
+
+/* Contenedor principal */
+
+main {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+/* Títulos */
+
+h1,
+h2,
+h3 {
+  margin-top: 0;
+  color: #111827;
+}
+
 h1 {
-  font-size: 2rem;
+  margin-bottom: 24px;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+h2 {
+  margin-bottom: 16px;
+  font-size: 24px;
+}
+
+p {
+  line-height: 1.5;
+}
+
+/* Enlaces */
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Formularios */
+
+form {
+  width: 100%;
+  max-width: 600px;
+}
+
+form > div {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 600;
+  color: #374151;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 10%);
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Botones */
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 11px 18px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  transition:
+    background 0.15s ease,
+    transform 0.05s ease;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Imágenes */
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tarjetas */
+
+article {
+  padding: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
+}
+
+/* Mensajes */
+
+.message {
+  margin: 16px 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+  main {
+    padding: 24px 16px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 21px;
+  }
+
+  button {
+    min-height: 44px;
+  }
+
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
 }

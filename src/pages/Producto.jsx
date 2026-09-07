@@ -12,6 +12,7 @@ function Producto() {
   const [images, setImages] = useState([])
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
+  const [categories, setCategories] = useState([])
 
 
   useEffect(() => {
@@ -44,6 +45,18 @@ function Producto() {
 
           setImages(imagesData)
         }
+
+      const categoriesResponse = await fetch(
+        'http://127.0.0.1:8000/api/categories',
+      )
+
+      if (categoriesResponse.ok) {
+        const categoriesData =
+          await categoriesResponse.json()
+
+        setCategories(categoriesData)
+      }
+
       } catch {
         setMessage(
           'No se pudo cargar el producto.',
@@ -123,7 +136,13 @@ function Producto() {
       </p>
 
       <p>
-        Categoría: {product.category}
+        Categoría:{' '}
+        {
+          categories.find(
+            (category) =>
+              category.id === product.category_id,
+          )?.name || 'General / Otros'
+        }
       </p>
 
       <p>
