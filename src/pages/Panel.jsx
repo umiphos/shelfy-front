@@ -4,12 +4,17 @@ import {
   useNavigate,
 } from 'react-router-dom'
 
+import Nameplate from '../components/Nameplate'
+import SiteFooter from '../components/SiteFooter'
+import { API_BASE, getStoredUser } from '../lib/api'
+
 
 function Panel() {
   const navigate = useNavigate()
 
   const [user, setUser] = useState(null)
   const [catalog, setCatalog] = useState(null)
+  const [productCount, setProductCount] = useState(null)
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(true)
@@ -17,22 +22,16 @@ function Panel() {
 
 
   useEffect(() => {
-    const storedUser =
-      localStorage.getItem('user')
+    const currentUser = getStoredUser()
 
-    if (!storedUser) {
+    if (!currentUser) {
       navigate('/login')
       return
     }
 
-    const currentUser =
-      JSON.parse(storedUser)
-
     setUser(currentUser)
 
-    fetch(
-      `http://127.0.0.1:8000/api/catalogs/${currentUser.id}`,
-    )
+    fetch(`${API_BASE}/api/catalogs/${currentUser.id}`)
       .then(async (response) => {
         if (!response.ok) {
           throw new Error()
@@ -42,10 +41,22 @@ function Panel() {
       })
       .then((data) => {
         setCatalog(data)
+
+        if (data) {
+          return fetch(
+            `${API_BASE}/api/products/${data.id}`,
+          )
+            .then((response) =>
+              response.ok ? response.json() : [],
+            )
+            .then((products) =>
+              setProductCount(products.length),
+            )
+        }
       })
       .catch(() => {
         setMessage(
-          'No se pudo cargar el catálogo.',
+          'No se pudo cargar tu catálogo.',
         )
       })
       .finally(() => {
@@ -62,7 +73,7 @@ function Panel() {
 
     try {
       const response = await fetch(
-        'http://127.0.0.1:8000/api/catalogs',
+        `${API_BASE}/api/catalogs`,
         {
           method: 'POST',
           headers: {
@@ -87,10 +98,8 @@ function Panel() {
       }
 
       setCatalog(data)
+      setProductCount(0)
       setName('')
-      setMessage(
-        'Catálogo creado correctamente.',
-      )
     } catch {
       setMessage(
         'No se pudo conectar con el servidor.',
@@ -109,110 +118,158 @@ function Panel() {
 
   if (loading) {
     return (
-      <main>
-        <p>Cargando...</p>
-      </main>
+      <>
+        <Nameplate />
+        <main className="page">
+          <p className="loading">Cargando tu panel…</p>
+        </main>
+      </>
     )
   }
 
 
   return (
-    <main>
-      <h1>Panel</h1>
+    <>
+      <Nameplate>
+        {catalog && (
+          <Link to={`/catalogo/${catalog.slug}`}>
+            Ver catálogo público
+          </Link>
+        )}
 
-      {user && (
-        <p>
-          Usuario: {user.email}
-        </p>
-      )}
+        <button type="button" onClick={handleLogout}>
+          Cerrar sesión
+        </button>
+      </Nameplate>
 
-      {!catalog ? (
-        <>
-          <h2>Crear catálogo</h2>
+      <main className="page page--medium">
+        <p className="eyebrow">Panel</p>
 
-          <form
-            onSubmit={handleCreateCatalog}
-          >
-            <div>
-              <label htmlFor="catalog-name">
-                Nombre del catálogo
-              </label>
+        {!catalog ? (
+          <>
+            <h1>Crea tu catálogo</h1>
 
-              <input
-                id="catalog-name"
-                type="text"
-                value={name}
-                onChange={(event) =>
-                  setName(event.target.value)
-                }
-                required
-              />
+            <p className="lede">
+              Elige el nombre público con el que tus clientes
+              te encontrarán. Podrás agregar productos en
+              cuanto lo crees.
+            </p>
+
+            <form
+              className="form"
+              onSubmit={handleCreateCatalog}
+              style={{ maxWidth: 420 }}
+            >
+              <div className="field">
+                <label htmlFor="catalog-name">
+                  Nombre del catálogo
+                </label>
+
+                <input
+                  id="catalog-name"
+                  type="text"
+                  value={name}
+                  onChange={(event) =>
+                    setName(event.target.value)
+                  }
+                  placeholder="Ej. Tortillería Doña Lupe"
+                  required
+                />
+              </div>
+
+              {message && (
+                <p className="message message--error">
+                  {message}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="btn btn--primary"
+                disabled={saving}
+              >
+                {saving ? 'Creando...' : 'Crear catálogo'}
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            <h1>{catalog.name}</h1>
+
+            {message && (
+              <p className="message message--error">
+                {message}
+              </p>
+            )}
+
+            <div className="stat-row">
+              <div className="stat">
+                <span className="stat__label">Estado</span>
+                <span className="stat__value">
+                  {catalog.active === false
+                    ? 'Inactivo'
+                    : 'Activo'}
+                </span>
+              </div>
+
+              <div className="stat">
+                <span className="stat__label">Productos</span>
+                <span className="stat__value">
+                  {productCount ?? '—'}
+                </span>
+              </div>
+
+              <div className="stat">
+                <span className="stat__label">
+                  Enlace público
+                </span>
+                <span className="stat__value">
+                  <Link
+                    to={`/catalogo/${catalog.slug}`}
+                    className="link"
+                    style={{ fontSize: 'var(--fs-300)' }}
+                  >
+                    /{catalog.slug}
+                  </Link>
+                </span>
+              </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={saving}
-            >
-              {saving
-                ? 'Creando...'
-                : 'Crear catálogo'}
-            </button>
-          </form>
-        </>
-      ) : (
-        <>
-          <h2>{catalog.name}</h2>
+            <ul className="toc">
+              <li className="toc__item">
+                <Link to="/productos/nuevo">
+                  Agregar producto
+                </Link>
+                <span className="toc__leader" />
+                <span className="toc__hint">
+                  Publica al instante
+                </span>
+              </li>
 
-          <p>
-            Catálogo creado.
-          </p>
+              <li className="toc__item">
+                <Link to="/productos">Mis productos</Link>
+                <span className="toc__leader" />
+                <span className="toc__hint">
+                  {productCount ?? 0} en total
+                </span>
+              </li>
 
-          <p>
-            Productos: 0
-          </p>
+              <li className="toc__item">
+                <Link to={`/catalogo/${catalog.slug}`}>
+                  Ver catálogo público
+                </Link>
+                <span className="toc__leader" />
+                <span className="toc__hint">
+                  Así lo ven tus clientes
+                </span>
+              </li>
+            </ul>
+          </>
+        )}
+      </main>
 
-          <button type="button">
-            <Link to="/productos/nuevo">
-              Agregar producto
-            </Link>          
-          </button>
-
-          <button type="button">
-            Ver catálogo público
-          </button>
-
-          <p>
-            <Link to="/productos">
-              Ver productos
-            </Link>
-          </p>
-          <p>
-            <Link to={`/catalogo/${catalog.slug}`}>
-              Ver mi catálogo
-            </Link>
-          </p>
-        </>
-      )}
-
-      {message && (
-        <p>
-          {message}
-        </p>
-      )}
-
-      <p>
-        <Link to="/panel">
-          Panel
-        </Link>
-      </p>
-
-      <button
-        type="button"
-        onClick={handleLogout}
-      >
-        Cerrar sesión
-      </button>
-    </main>
+      <SiteFooter />
+    </>
   )
 }
 

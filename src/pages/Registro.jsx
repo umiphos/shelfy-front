@@ -1,10 +1,14 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import SiteFooter from '../components/SiteFooter'
+import { API_BASE } from '../lib/api'
+
 
 function Registro() {
   const [message, setMessage] = useState('')
   const [success, setSuccess] = useState(false)
+  const [saving, setSaving] = useState(false)
 
 
   async function handleSubmit(event) {
@@ -12,12 +16,13 @@ function Registro() {
 
     setMessage('')
     setSuccess(false)
+    setSaving(true)
 
     const formData = new FormData(event.target)
 
     try {
       const response = await fetch(
-        'http://127.0.0.1:8000/api/register',
+        `${API_BASE}/api/register`,
         {
           method: 'POST',
           headers: {
@@ -42,99 +47,111 @@ function Registro() {
       }
 
       setSuccess(true)
-      setMessage('Cuenta creada correctamente.')
 
       event.target.reset()
     } catch {
       setMessage(
         'No se pudo conectar con el servidor.',
       )
+    } finally {
+      setSaving(false)
     }
   }
 
 
   return (
-    <main className="auth-page">
-      <section className="auth-card">
-        <div className="auth-header">
-          <span className="brand">CATÁLOGO</span>
+    <>
+      <div className="page page--narrow auth-page">
+        <p className="eyebrow">Catálogo</p>
 
-          <h1>Crear cuenta</h1>
+        {success ? (
+          <>
+            <h1 className="auth-page__mark">
+              Revisa tu correo
+            </h1>
 
-          <p>
-            Crea tu cuenta y comienza tu catálogo.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="email">
-              Correo electrónico
-            </label>
-
-            <input
-              id="email"
-              type="email"
-              name="email"
-              autoComplete="email"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password">
-              Contraseña
-            </label>
-
-            <input
-              id="password"
-              type="password"
-              name="password"
-              minLength="5"
-              autoComplete="new-password"
-              required
-            />
-
-            <small className="field-help">
-              Mínimo 5 caracteres.
-            </small>
-          </div>
-
-          {message && (
-            <p className="message">
-              {message}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            className="primary-button"
-          >
-            Crear cuenta
-          </button>
-        </form>
-
-        {success && (
-          <div className="success-box">
-            <p>
-              Cuenta creada correctamente.
+            <p className="auth-page__lede">
+              Te enviamos un enlace para verificar tu cuenta.
+              Confírmalo y después inicia sesión para crear
+              tu catálogo.
             </p>
 
-            <Link to="/login">
-              Iniciar sesión
+            <Link to="/login" className="btn btn--primary">
+              Ir a iniciar sesión
             </Link>
-          </div>
+          </>
+        ) : (
+          <>
+            <h1 className="auth-page__mark">
+              Crear cuenta
+            </h1>
+
+            <p className="auth-page__lede">
+              Regístrate para armar tu catálogo y compartirlo
+              por WhatsApp.
+            </p>
+
+            <form className="form" onSubmit={handleSubmit}>
+              <div className="field">
+                <label htmlFor="email">
+                  Correo electrónico
+                </label>
+
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  required
+                />
+              </div>
+
+              <div className="field">
+                <label htmlFor="password">
+                  Contraseña
+                </label>
+
+                <input
+                  id="password"
+                  type="password"
+                  name="password"
+                  minLength="5"
+                  autoComplete="new-password"
+                  required
+                />
+
+                <p className="field__hint">
+                  Mínimo 5 caracteres.
+                </p>
+              </div>
+
+              {message && (
+                <p className="message message--error">
+                  {message}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="btn btn--primary btn--block"
+                disabled={saving}
+              >
+                {saving ? 'Creando cuenta...' : 'Crear cuenta'}
+              </button>
+            </form>
+
+            <p className="auth-page__foot">
+              ¿Ya tienes una cuenta?{' '}
+              <Link to="/login" className="link">
+                Inicia sesión
+              </Link>
+            </p>
+          </>
         )}
+      </div>
 
-        <div className="auth-footer">
-          <span>¿Ya tienes una cuenta?</span>
-
-          <Link to="/login">
-            Iniciar sesión
-          </Link>
-        </div>
-      </section>
-    </main>
+      <SiteFooter />
+    </>
   )
 }
 

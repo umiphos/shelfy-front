@@ -4,6 +4,12 @@ import {
   useNavigate,
 } from 'react-router-dom'
 
+import Nameplate from '../components/Nameplate'
+import SiteFooter from '../components/SiteFooter'
+import StatusBadge from '../components/StatusBadge'
+import { API_BASE, getStoredUser, imageUrl } from '../lib/api'
+import { ownerAvailability } from '../lib/availability'
+
 
 function Productos() {
   const navigate = useNavigate()
@@ -15,19 +21,14 @@ function Productos() {
   const [images, setImages] = useState({})
 
   useEffect(() => {
-    const storedUser =
-      localStorage.getItem('user')
+    const user = getStoredUser()
 
-    if (!storedUser) {
+    if (!user) {
       navigate('/login')
       return
     }
 
-    const user = JSON.parse(storedUser)
-
-    fetch(
-      `http://127.0.0.1:8000/api/catalogs/${user.id}`,
-    )
+    fetch(`${API_BASE}/api/catalogs/${user.id}`)
       .then((response) => response.json())
       .then((data) => {
         if (!data) {
@@ -38,7 +39,7 @@ function Productos() {
         setCatalog(data)
 
         return fetch(
-          `http://127.0.0.1:8000/api/products/${data.id}`,
+          `${API_BASE}/api/products/${data.id}`,
         )
       })
       .then((response) => {
@@ -62,29 +63,36 @@ function Productos() {
   }, [navigate])
 
 
-async function loadImages(products) {
-  const imageMap = {}
+  async function loadImages(products) {
+    const imageMap = {}
 
-  for (const product of products) {
-    const response = await fetch(
-      `http://127.0.0.1:8000/api/products/${product.id}/images`,
-    )
+    for (const product of products) {
+      const response = await fetch(
+        `${API_BASE}/api/products/${product.id}/images`,
+      )
 
-    if (!response.ok) {
-      continue
+      if (!response.ok) {
+        continue
+      }
+
+      imageMap[product.id] = await response.json()
     }
 
-    const data = await response.json()
-
-    imageMap[product.id] = data
+    setImages(imageMap)
   }
 
-  setImages(imageMap)
-  }
 
-  async function handleDelete(productId) {
+  async function handleDelete(productId, productName) {
+    const confirmed = window.confirm(
+      `Eliminar "${productName}" es permanente y no se puede deshacer. ¿Continuar?`,
+    )
+
+    if (!confirmed) {
+      return
+    }
+
     const response = await fetch(
-      `http://127.0.0.1:8000/api/products/${productId}`,
+      `${API_BASE}/api/products/${productId}`,
       {
         method: 'DELETE',
       },
@@ -106,87 +114,104 @@ async function loadImages(products) {
   }
 
 
-  if (loading) {
-    return <main>Cargando...</main>
-  }
-
-
   return (
-    <main>
-      <h1>Productos</h1>
+    <>
+      <Nameplate>
+        <Link to="/panel">Panel</Link>
+        <Link to="/productos/nuevo">Agregar producto</Link>
+      </Nameplate>
 
-      {catalog && (
-        <p>
-          Catálogo: {catalog.name}
+      <main className="page">
+        <p className="eyebrow">
+          {catalog?.name || 'Productos'}
         </p>
-      )}
 
-      <p>
-        <Link to="/panel">
-          Volver al panel
-        </Link>
-      </p>
+        <h1>Mis productos</h1>
 
-      <p>
-        <Link to="/productos/nuevo">
-          Agregar producto
-        </Link>
-      </p>
+        {message && (
+          <p className="message message--error">{message}</p>
+        )}
 
-      {message && (
-        <p>{message}</p>
-      )}
+        {loading ? (
+          <p className="loading">Cargando productos…</p>
+        ) : products.length === 0 ? (
+          <div className="empty-state">
+            <h3>Todavía no tienes productos</h3>
+            <p>
+              Agrega el primero y aparecerá en tu catálogo
+              público de inmediato.
+            </p>
+            <Link to="/productos/nuevo" className="btn btn--primary">
+              Agregar producto
+            </Link>
+          </div>
+        ) : (
+          <div className="owner-list">
+            {products.map((product) => {
+              const availability = ownerAvailability(product)
+              const cover = images[product.id]?.[0]
 
-      {products.length === 0 ? (
-        <p>
-          Todavía no tienes productos.
-        </p>
-      ) : (
-        <div>
-          {products.map((product) => (
-            <article key={product.id}>
-              {images[product.id]?.length > 0 && (
-                <img
-                  src={`http://127.0.0.1:8000${images[product.id][0].url}`}
-                  alt={product.name}
-                  width="200"
-                />
-              )}
-              <h2>{product.name}</h2>
+              return (
+                <article className="owner-row" key={product.id}>
+                  <div
+                    className={
+                      cover
+                        ? 'owner-row__thumb'
+                        : 'owner-row__thumb owner-row__thumb--empty'
+                    }
+                  >
+                    {cover ? (
+                      <img
+                        src={imageUrl(cover.url)}
+                        alt={product.name}
+                      />
+                    ) : (
+                      'Sin foto'
+                    )}
+                  </div>
 
-              <p>
-                Precio: ${product.price}
-              </p>
+                  <div>
+                    <p className="owner-row__name">
+                      {product.name}
+                    </p>
 
-              <p>
-                Categoría: {product.category}
-              </p>
+                    <div className="owner-row__meta">
+                      <span>${product.price}</span>
+                      <span>{product.category}</span>
+                      <StatusBadge
+                        label={availability.label}
+                        variant={availability.variant}
+                      />
+                    </div>
+                  </div>
 
-              <p>
-                Cantidad: {product.quantity}
-              </p>
+                  <div className="owner-row__actions">
+                    <Link
+                      to={`/productos/${product.id}/editar`}
+                      className="btn--text"
+                    >
+                      Editar
+                    </Link>
 
-              <Link
-                to={`/productos/${product.id}/editar`}
-              >
-                Editar
-              </Link>
+                    <button
+                      type="button"
+                      className="btn--text btn--danger"
+                      onClick={() =>
+                        handleDelete(product.id, product.name)
+                      }
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        )}
+      </main>
 
-              {' '}
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleDelete(product.id)
-                }
-              >
-                Eliminar
-              </button>
-            </article>
-          ))}
-        </div>
-      )}
-    </main>
+      <SiteFooter />
+    </>
   )
 }
 

@@ -4,23 +4,28 @@ import {
   useNavigate,
 } from 'react-router-dom'
 
+import SiteFooter from '../components/SiteFooter'
+import { API_BASE } from '../lib/api'
+
 
 function Login() {
   const navigate = useNavigate()
 
   const [message, setMessage] = useState('')
+  const [saving, setSaving] = useState(false)
 
 
   async function handleSubmit(event) {
     event.preventDefault()
 
     setMessage('')
+    setSaving(true)
 
     const formData = new FormData(event.target)
 
     try {
       const response = await fetch(
-        'http://127.0.0.1:8000/api/login',
+        `${API_BASE}/api/login`,
         {
           method: 'POST',
           headers: {
@@ -38,7 +43,7 @@ function Login() {
       if (!response.ok) {
         setMessage(
           data.detail ||
-            'Error al iniciar sesión.',
+            'Correo o contraseña incorrectos.',
         )
 
         return
@@ -57,25 +62,27 @@ function Login() {
       setMessage(
         'No se pudo conectar con el servidor.',
       )
+    } finally {
+      setSaving(false)
     }
   }
 
 
   return (
-    <main className="auth-page">
-      <section className="auth-card">
-        <div className="auth-header">
-          <span className="brand">CATÁLOGO</span>
+    <>
+      <div className="page page--narrow auth-page">
+        <p className="eyebrow">Catálogo</p>
 
-          <h1>Bienvenido</h1>
+        <h1 className="auth-page__mark">
+          Iniciar sesión
+        </h1>
 
-          <p>
-            Inicia sesión para administrar tu catálogo.
-          </p>
-        </div>
+        <p className="auth-page__lede">
+          Accede a tu catálogo.
+        </p>
 
-        <form onSubmit={handleSubmit}>
-          <div>
+        <form className="form" onSubmit={handleSubmit}>
+          <div className="field">
             <label htmlFor="email">
               Correo electrónico
             </label>
@@ -89,7 +96,7 @@ function Login() {
             />
           </div>
 
-          <div>
+          <div className="field">
             <label htmlFor="password">
               Contraseña
             </label>
@@ -104,28 +111,30 @@ function Login() {
           </div>
 
           {message && (
-            <p className="message">
+            <p className="message message--error">
               {message}
             </p>
           )}
 
           <button
             type="submit"
-            className="primary-button"
+            className="btn btn--primary btn--block"
+            disabled={saving}
           >
-            Iniciar sesión
+            {saving ? 'Entrando...' : 'Iniciar sesión'}
           </button>
         </form>
 
-        <div className="auth-footer">
-          <span>¿Todavía no tienes una cuenta?</span>
-
-          <Link to="/registro">
-            Crear una cuenta
+        <p className="auth-page__foot">
+          ¿No tienes cuenta?{' '}
+          <Link to="/registro" className="link">
+            Crea una
           </Link>
-        </div>
-      </section>
-    </main>
+        </p>
+      </div>
+
+      <SiteFooter />
+    </>
   )
 }
 
