@@ -12,6 +12,7 @@ import Productos from './pages/Productos'
 import ProductoForm from './pages/ProductoForm'
 import Producto from './pages/Producto'
 import Catalogo from './pages/Catalogo'
+import './App.css'
 
 
 function App() {
