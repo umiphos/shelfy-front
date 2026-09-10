@@ -5,13 +5,13 @@
 
 :root {
   /* Color — "papel" cálido de catálogo, tinta, acentos funcionales */
-  --paper: #f1ebdd;
+  --paper: #ddc9a3;
   --paper-raised: #fbf8f1;
   --ink: #211d17;
-  --ink-soft: #6b6252;
-  --ink-faint: #948a76;
-  --rule: #cabfa8;
-  --rule-soft: #e2d9c5;
+  --ink-soft: #5c5446;
+  --ink-faint: #726a59;
+  --rule: #b09f7d;
+  --rule-soft: #c3b188;
   --indigo: #33465c;
   --indigo-soft: #5c7086;
   --clay: #9c3b2e;
@@ -21,6 +21,11 @@
   --whatsapp-dark: #256e3e;
   --danger: #9c3b2e;
   --overlay: rgb(33 29 23 / 6%);
+
+  /* Marca — naranja mercado, reservado por ahora al landing */
+  --marigold: #e8641f;
+  --marigold-deep: #c94f14;
+  --marigold-soft: #f7d9b8;
 
   /* Tipografía */
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;

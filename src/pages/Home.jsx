@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 import Nameplate from '../components/Nameplate'
 import SiteFooter from '../components/SiteFooter'
-import StatusBadge from '../components/StatusBadge'
+import OrderDemo from '../components/OrderDemo'
 
 
 const DEMO_CATALOG_URL = 'https://precioinbox.com/catalogo/dummy'
@@ -38,10 +38,6 @@ function Home() {
       <main className="page landing">
         <section className="landing__hero">
           <div className="landing__hero-copy">
-            <p className="eyebrow">
-              Catálogo digital para negocios locales
-            </p>
-
             <h1>
               Tu catálogo, siempre a la mano de tus
               clientes.
@@ -59,47 +55,23 @@ function Home() {
                 href={DEMO_CATALOG_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="btn btn--outline"
+                className="btn btn--outline-marigold"
               >
                 Ver catálogo de ejemplo
               </a>
 
-              <Link to="/registro" className="btn btn--primary">
+              <Link to="/registro" className="btn btn--marigold">
                 Crear mi catálogo
               </Link>
             </div>
           </div>
 
-          <div className="landing__hero-visual" aria-hidden="true">
-            <div className="product-card landing__mock-card">
-              <div className="product-card__frame">
-                <div className="product-card__frame--empty">
-                  Foto del producto
-                </div>
-
-                <StatusBadge
-                  className="product-card__badge"
-                  label="Disponible"
-                  variant="available"
-                />
-              </div>
-
-              <p className="product-card__name">
-                Producto de ejemplo
-              </p>
-
-              <div className="product-card__meta">
-                <span className="product-card__price">
-                  $249
-                </span>
-                <span>Categoría</span>
-              </div>
-            </div>
+          <div className="landing__hero-visual">
+            <OrderDemo />
           </div>
         </section>
 
         <section className="landing__features">
-          <p className="eyebrow">Cómo funciona</p>
           <h2>Todo lo que necesitas, nada de lo que no.</h2>
 
           <div className="landing__feature-grid">
@@ -125,12 +97,12 @@ function Home() {
               href={DEMO_CATALOG_URL}
               target="_blank"
               rel="noreferrer"
-              className="btn btn--outline"
+              className="btn btn--outline-marigold"
             >
               Ver catálogo de ejemplo
             </a>
 
-            <Link to="/registro" className="btn btn--primary">
+            <Link to="/registro" className="btn btn--marigold">
               Crear mi catálogo
             </Link>
           </div>
