@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
 
-function Nameplate({ brand = 'Catálogo', to = '/', children }) {
+function Nameplate({ brand = 'Precio Inbox', to = '/', children }) {
   return (
     <header className="nameplate">
       <div className="nameplate__inner">

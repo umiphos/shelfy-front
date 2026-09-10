@@ -1,16 +1,41 @@
-# React + Vite
+# Precio Inbox — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Catálogo digital para negocios locales. Los dueños crean su catálogo,
+suben productos con fotos y precio, y comparten una URL pública que
+sus clientes pueden ver y usar para pedir directo por WhatsApp.
 
-Currently, two official plugins are available:
+Este repositorio es el frontend (React + Vite). El backend vive en un
+repositorio separado (FastAPI + PostgreSQL).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Producción: [precioinbox.com](https://precioinbox.com)
 
-## React Compiler
+## Flujo principal
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Público**: `/catalogo/:slug` muestra el catálogo de un negocio,
+  `/productos/:productId` muestra el detalle de un producto con botón
+  de "Pedir por WhatsApp".
+- **Dueño del negocio**: `/registro` y `/login` para crear cuenta,
+  `/panel` para administrar el catálogo, `/productos` para dar de
+  alta y editar productos.
 
-## Expanding the ESLint configuration
+## Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React 19 + React Router 7
+- Vite
+- CSS plano con variables de diseño (sin framework de UI), en
+  `src/index.css` (tokens) y `src/App.css` (componentes)
+
+## Desarrollo local
+
+```bash
+npm install
+npm run dev
+```
+
+Requiere una variable de entorno `VITE_API_BASE_URL` apuntando al
+backend (ver `.env.example`).
+
+```bash
+npm run build    # build de producción
+npm run lint      # eslint
+```

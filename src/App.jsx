@@ -5,6 +5,7 @@ import {
   Routes,
 } from 'react-router-dom'
 
+import Home from './pages/Home'
 import Registro from './pages/Registro'
 import Login from './pages/Login'
 import Panel from './pages/Panel'
@@ -19,6 +20,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
         <Route
           path="/registro"
           element={<Registro />}
@@ -50,16 +56,6 @@ function App() {
         />
 
         <Route
-          path="*"
-          element={
-            <Navigate
-              to="/registro"
-              replace
-            />
-          }
-        />
-
-        <Route
           path="/productos/:productId"
           element={<Producto />}
         />
@@ -67,6 +63,16 @@ function App() {
         <Route
           path="/catalogo/:slug"
           element={<Catalogo />}
+        />
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
         />
       </Routes>
     </BrowserRouter>
