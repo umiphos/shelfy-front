@@ -1,118 +1,20 @@
 import { Link } from 'react-router-dom'
-
+import { ArrowRight, Check, MessageCircle, Package, Smartphone, Zap } from 'lucide-react'
 import Nameplate from '../components/Nameplate'
 import SiteFooter from '../components/SiteFooter'
 import OrderDemo from '../components/OrderDemo'
 
-
-const DEMO_CATALOG_URL = 'https://precioinbox.com/catalogo/dummy'
-
-const FEATURES = [
-  {
-    title: 'Catálogo público en segundos',
-    body: 'Da de alta tus productos con fotos, precio y categoría. Tu catálogo queda listo en una URL que puedes compartir de inmediato.',
-  },
-  {
-    title: 'Pedidos directo a WhatsApp',
-    body: 'Cada producto tiene un botón de "Pedir por WhatsApp" que abre la conversación con el mensaje ya redactado. Sin apps nuevas para tus clientes.',
-  },
-  {
-    title: 'Disponibilidad clara',
-    body: 'Marca cada producto como disponible, últimas piezas o agotado. Tus clientes lo ven antes de preguntar.',
-  },
-  {
-    title: 'Panel para administrar todo',
-    body: 'Edita productos, organiza categorías y controla qué se muestra públicamente desde un panel simple, sin curva de aprendizaje.',
-  },
-]
-
-
-function Home() {
-  return (
-    <>
-      <Nameplate>
-        <Link to="/login">Iniciar sesión</Link>
-        <Link to="/registro">Crear cuenta</Link>
-      </Nameplate>
-
-      <main className="page landing">
-        <section className="landing__hero">
-          <div className="landing__hero-copy">
-            <h1>
-              Tu catálogo, siempre a la mano de tus
-              clientes.
-            </h1>
-
-            <p className="lede">
-              Crea tu catálogo en minutos, compártelo por
-              WhatsApp y deja que tus clientes vean
-              disponibilidad y precios sin tener que
-              preguntarte primero.
-            </p>
-
-            <div className="landing__cta">
-              <a
-                href={DEMO_CATALOG_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn--outline-marigold"
-              >
-                Ver catálogo de ejemplo
-              </a>
-
-              <Link to="/registro" className="btn btn--marigold">
-                Crear mi catálogo
-              </Link>
-            </div>
-          </div>
-
-          <div className="landing__hero-visual">
-            <OrderDemo />
-          </div>
-        </section>
-
-        <section className="landing__features">
-          <h2>Todo lo que necesitas, nada de lo que no.</h2>
-
-          <div className="landing__feature-grid">
-            {FEATURES.map((feature) => (
-              <div className="landing__feature" key={feature.title}>
-                <h3>{feature.title}</h3>
-                <p>{feature.body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="landing__cta-band">
-          <h2>¿Listo para armar tu catálogo?</h2>
-
-          <p className="lede">
-            Regístrate gratis y comparte tu primer catálogo
-            hoy mismo.
-          </p>
-
-          <div className="landing__cta">
-            <a
-              href={DEMO_CATALOG_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn--outline-marigold"
-            >
-              Ver catálogo de ejemplo
-            </a>
-
-            <Link to="/registro" className="btn btn--marigold">
-              Crear mi catálogo
-            </Link>
-          </div>
-        </section>
-      </main>
-
-      <SiteFooter note="Catálogo digital por WhatsApp" />
-    </>
-  )
-}
-
-
+const benefits=[['01','Precios en vivo','Cambia un precio y se actualiza al instante en todo tu catálogo. Sin capturas, sin PDFs viejos.'],['02','Disponibilidad clara','Tus clientes ven si hay piezas disponibles antes de escribirte.'],['03','Pedido en un toque','Cada producto puede abrir WhatsApp con el mensaje listo para confirmar.'],['04','Sin apps para el cliente','Un enlace que abre en el navegador. Nada que descargar.']]
+function Home(){return <div className="min-h-screen bg-paper text-ink">
+  <Nameplate><Link to="/login" className="rounded-full px-4 py-2 text-sm font-medium text-ink/65 hover:bg-ink/5">Iniciar sesión</Link><Link to="/registro" className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper">Crear mi catálogo</Link></Nameplate>
+  <main className="mx-auto max-w-6xl px-5 sm:px-6">
+    <section className="grid items-center gap-12 py-14 md:grid-cols-12 md:py-20">
+      <div className="rise md:col-span-6"><span className="inline-flex items-center gap-2 rounded-full border border-brand/25 bg-brand-soft/45 px-3 py-1 text-[11px] font-bold uppercase tracking-[.15em] text-brand"><span className="size-1.5 rounded-full bg-brand"/> Catálogo vivo</span><h1 className="mt-5 max-w-[18ch] font-display text-[2.65rem] font-bold leading-[1.06] tracking-tight sm:text-5xl">Tu catálogo, siempre a la mano de tus clientes.</h1><p className="mt-5 max-w-[43ch] text-[15px] leading-7 text-ink-soft">Muestra cada producto con su precio, disponibilidad y un solo toque para pedir por WhatsApp. Sin apps que instalar ni fricción para tu cliente.</p><div className="mt-7 flex flex-wrap gap-3"><Link to="/registro" className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-paper shadow-lg shadow-brand/15 transition hover:-translate-y-0.5">Crear mi catálogo <ArrowRight size={16}/></Link><a href="/catalogo/dummy" className="rounded-full border border-ink/20 bg-paper-soft px-6 py-3 text-sm font-semibold hover:border-ink/40">Ver catálogo de ejemplo</a></div><div className="mt-7 flex flex-wrap gap-x-4 gap-y-2 text-xs text-ink/55"><span>✓ Precios al día</span><span>✓ WhatsApp</span><span>✓ Listo en minutos</span></div></div>
+      <div className="rise md:col-span-6" style={{animationDelay:'140ms'}}><OrderDemo/></div>
+    </section>
+    <section className="border-t border-ink/10 py-16"><p className="text-xs font-bold uppercase tracking-[.16em] text-brand">Por qué Precio Inbox</p><h2 className="mt-2 max-w-xl font-display text-2xl font-bold sm:text-3xl">Todo lo que tu mostrador necesita, en un solo lugar.</h2><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{benefits.map(([n,t,b])=><article key={n} className="rounded-2xl border border-ink/10 bg-paper-soft p-6 transition hover:-translate-y-1 hover:border-ink/20 hover:shadow-lg hover:shadow-ink/5"><span className="text-xs font-bold text-brand">{n}</span><h3 className="mt-3 font-display text-lg font-bold">{t}</h3><p className="mt-2 text-sm leading-6 text-ink-soft">{b}</p></article>)}</div></section>
+    <section className="pb-16"><div className="grid gap-4 md:grid-cols-3"><div className="rounded-3xl bg-ink p-7 text-paper md:col-span-2"><span className="grid size-10 place-items-center rounded-xl bg-brand"><Package size={20}/></span><h2 className="mt-7 max-w-lg font-display text-2xl font-bold">Un enlace. Todos tus productos.</h2><p className="mt-3 max-w-lg text-sm leading-6 text-paper/65">Actualiza tu catálogo desde tu panel y comparte siempre el mismo enlace con tus clientes.</p><div className="mt-6 flex flex-wrap gap-3 text-xs font-semibold text-paper/75"><span className="flex items-center gap-1.5"><Check size={14} className="text-brand"/> Fotos</span><span className="flex items-center gap-1.5"><Check size={14} className="text-brand"/> Precio</span><span className="flex items-center gap-1.5"><Check size={14} className="text-brand"/> Existencias</span></div></div><div className="rounded-3xl border border-ink/10 bg-brand-soft/50 p-7"><MessageCircle className="text-brand"/><h3 className="mt-6 font-display text-xl font-bold">Directo a WhatsApp</h3><p className="mt-2 text-sm leading-6 text-ink-soft">Tu cliente no necesita aprender nada nuevo. Toca, pregunta y listo.</p></div></div></section>
+    <section className="rounded-3xl bg-ink px-6 py-12 text-center sm:px-8"><h2 className="mx-auto max-w-[23ch] font-display text-2xl font-bold text-paper sm:text-3xl">Abre tu mostrador digital hoy mismo.</h2><p className="mx-auto mt-3 max-w-[46ch] text-sm leading-6 text-paper/65">Crea tu catálogo en minutos y empieza a recibir pedidos por WhatsApp.</p><Link to="/registro" className="mt-7 inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-paper hover:-translate-y-0.5"><Zap size={16}/> Crear mi catálogo</Link></section>
+  </main><SiteFooter note="Catálogo digital por WhatsApp"/>
+</div>}
 export default Home

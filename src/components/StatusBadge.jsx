@@ -1,10 +1,3 @@
-function StatusBadge({ label, variant = 'available', className = '' }) {
-  return (
-    <span className={`badge badge--${variant} ${className}`.trim()}>
-      {label}
-    </span>
-  )
-}
-
-
+import { Badge } from './UI'
+function StatusBadge({ label, variant='available', className='' }) { return <Badge variant={variant} className={className}>{label}</Badge> }
 export default StatusBadge
