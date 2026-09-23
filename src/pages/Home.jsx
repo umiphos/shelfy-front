@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Check, MessageCircle, Package, Smartphone, Zap } from 'lucide-react'
+import { ArrowRight, Check, MessageCircle, Package, Zap } from 'lucide-react'
 import Nameplate from '../components/Nameplate'
 import SiteFooter from '../components/SiteFooter'
 import OrderDemo from '../components/OrderDemo'

@@ -1,6 +1,6 @@
 import { useEffect,useState } from 'react'
 import { Link,useParams } from 'react-router-dom'
-import { ArrowLeft, Check, ExternalLink, MessageCircle, Share2, Truck } from 'lucide-react'
+import { ArrowLeft, Check, MessageCircle, Share2, Truck } from 'lucide-react'
 import Nameplate from '../components/Nameplate'
 import SiteFooter from '../components/SiteFooter'
 import StatusBadge from '../components/StatusBadge'
@@ -9,8 +9,8 @@ import { publicAvailability } from '../lib/availability'
 import { whatsappOrderLink } from '../lib/whatsapp'
 
 function Producto(){const{productId}=useParams();const[product,setProduct]=useState(null);const[images,setImages]=useState([]);const[active,setActive]=useState(0);const[categories,setCategories]=useState([]);const[loading,setLoading]=useState(true);const[message,setMessage]=useState('');const[shared,setShared]=useState(false)
-useEffect(()=>{(async()=>{try{const r=await fetch(`${API_BASE}/api/products/item/${productId}`);if(!r.ok){setMessage('No se encontró el producto.');return}const p=await r.json();setProduct(p);const[ir,cr]=await Promise.all([fetch(`${API_BASE}/api/products/${productId}/images`),fetch(`${API_BASE}/api/categories`)]);if(ir.ok)setImages(await ir.json());if(cr.ok)setCategories(await cr.json())}catch{setMessage('No se pudo cargar el producto.')}finally{setLoading(false)}})()},[productId])
-async function share(){const url=window.location.href;if(navigator.share){try{await navigator.share({title:product.name,url})}catch{}return}try{await navigator.clipboard.writeText(url);setShared(true);setTimeout(()=>setShared(false),1800)}catch{}}
+useEffect(()=>{(async()=>{try{const r=await fetch(`${API_BASE}/api/products/public/${productId}`);if(!r.ok){setMessage('No se encontró el producto.');return}const p=await r.json();setProduct(p);const[ir,cr]=await Promise.all([fetch(`${API_BASE}/api/products/public/${productId}/images`),fetch(`${API_BASE}/api/categories`)]);if(ir.ok)setImages(await ir.json());if(cr.ok)setCategories(await cr.json())}catch{setMessage('No se pudo cargar el producto.')}finally{setLoading(false)}})()},[productId])
+async function share(){const url=window.location.href;if(navigator.share){try{await navigator.share({title:product.name,url})}catch{return}return}try{await navigator.clipboard.writeText(url);setShared(true);setTimeout(()=>setShared(false),1800)}catch{return}}
 if(loading)return <><Nameplate/><main className="mx-auto max-w-6xl px-5 py-20 text-center text-sm text-ink/50">Cargando producto…</main></>
 if(message)return <><Nameplate/><main className="mx-auto max-w-6xl px-5 py-20"><div className="rounded-3xl border border-ink/10 bg-paper-soft p-10 text-center"><h2 className="font-display text-2xl font-bold">{message}</h2><Link to="/" className="mt-5 inline-flex rounded-full bg-ink px-5 py-3 text-sm font-semibold text-paper">Volver</Link></div></main></>
 if(!product)return null;const a=publicAvailability(product);const category=categories.find(c=>c.id===product.category_id)?.name||'General / Otros';const main=images[active]||images[0]
