@@ -3,10 +3,28 @@ import { ArrowRight, Check, MessageCircle, Package, Smartphone, Zap } from 'luci
 import Nameplate from '../components/Nameplate'
 import SiteFooter from '../components/SiteFooter'
 import OrderDemo from '../components/OrderDemo'
+import { getStoredUser } from "../lib/api";
 
 const benefits=[['01','Precios en vivo','Cambia un precio y se actualiza al instante en todo tu catálogo. Sin capturas, sin PDFs viejos.'],['02','Disponibilidad clara','Tus clientes ven si hay piezas disponibles antes de escribirte.'],['03','Pedido en un toque','Cada producto puede abrir WhatsApp con el mensaje listo para confirmar.'],['04','Sin apps para el cliente','Un enlace que abre en el navegador. Nada que descargar.']]
-function Home(){return <div className="min-h-screen bg-paper text-ink">
-  <Nameplate><Link to="/login" className="rounded-full px-4 py-2 text-sm font-medium text-ink/65 hover:bg-ink/5">Iniciar sesión</Link><Link to="/registro" className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper">Crear mi catálogo</Link></Nameplate>
+function Home(){
+  const user = getStoredUser();
+  return <div className="min-h-screen bg-paper text-ink">
+  <Nameplate>
+    {user ? (
+      <Link to="/panel">
+        Mi catálogo
+      </Link>
+    ) : (
+      <>
+        <Link to="/login">
+          Iniciar sesión
+        </Link>
+        <Link to="/registro">
+          Crear mi catálogo
+        </Link>
+      </>
+    )}
+  </Nameplate>
   <main className="mx-auto max-w-6xl px-5 sm:px-6">
     <section className="grid items-center gap-12 py-14 md:grid-cols-12 md:py-20">
       <div className="rise md:col-span-6"><span className="inline-flex items-center gap-2 rounded-full border border-brand/25 bg-brand-soft/45 px-3 py-1 text-[11px] font-bold uppercase tracking-[.15em] text-brand"><span className="size-1.5 rounded-full bg-brand"/> Catálogo vivo</span><h1 className="mt-5 max-w-[18ch] font-display text-[2.65rem] font-bold leading-[1.06] tracking-tight sm:text-5xl">Tu catálogo, siempre a la mano de tus clientes.</h1><p className="mt-5 max-w-[43ch] text-[15px] leading-7 text-ink-soft">Muestra cada producto con su precio, disponibilidad y un solo toque para pedir por WhatsApp. Sin apps que instalar ni fricción para tu cliente.</p><div className="mt-7 flex flex-wrap gap-3"><Link to="/registro" className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-paper shadow-lg shadow-brand/15 transition hover:-translate-y-0.5">Crear mi catálogo <ArrowRight size={16}/></Link><a href="/catalogo/dummy" className="rounded-full border border-ink/20 bg-paper-soft px-6 py-3 text-sm font-semibold hover:border-ink/40">Ver catálogo de ejemplo</a></div><div className="mt-7 flex flex-wrap gap-x-4 gap-y-2 text-xs text-ink/55"><span>✓ Precios al día</span><span>✓ WhatsApp</span><span>✓ Listo en minutos</span></div></div>
