@@ -1,18 +1,227 @@
-import { useEffect,useState } from 'react'
-import { Link,useParams } from 'react-router-dom'
-import { ArrowLeft, Check, ExternalLink, MessageCircle, Share2, Truck } from 'lucide-react'
-import Nameplate from '../components/Nameplate'
-import SiteFooter from '../components/SiteFooter'
-import StatusBadge from '../components/StatusBadge'
-import { API_BASE,imageUrl } from '../lib/api'
-import { publicAvailability } from '../lib/availability'
-import { whatsappOrderLink } from '../lib/whatsapp'
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import {
+  ArrowLeft,
+  Check,
+  ExternalLink,
+  MessageCircle,
+  Share2,
+  Truck,
+} from "lucide-react";
+import Nameplate from "../components/Nameplate";
+import SiteFooter from "../components/SiteFooter";
+import StatusBadge from "../components/StatusBadge";
+import { API_BASE, imageUrl } from "../lib/api";
+import { publicAvailability } from "../lib/availability";
+import { whatsappOrderLink } from "../lib/whatsapp";
 
-function Producto(){const{productId}=useParams();const[product,setProduct]=useState(null);const[images,setImages]=useState([]);const[active,setActive]=useState(0);const[categories,setCategories]=useState([]);const[loading,setLoading]=useState(true);const[message,setMessage]=useState('');const[shared,setShared]=useState(false)
-useEffect(()=>{(async()=>{try{const r=await fetch(`${API_BASE}/api/products/item/${productId}`);if(!r.ok){setMessage('No se encontró el producto.');return}const p=await r.json();setProduct(p);const[ir,cr]=await Promise.all([fetch(`${API_BASE}/api/products/${productId}/images`),fetch(`${API_BASE}/api/categories`)]);if(ir.ok)setImages(await ir.json());if(cr.ok)setCategories(await cr.json())}catch{setMessage('No se pudo cargar el producto.')}finally{setLoading(false)}})()},[productId])
-async function share(){const url=window.location.href;if(navigator.share){try{await navigator.share({title:product.name,url})}catch{}return}try{await navigator.clipboard.writeText(url);setShared(true);setTimeout(()=>setShared(false),1800)}catch{}}
-if(loading)return <><Nameplate/><main className="mx-auto max-w-6xl px-5 py-20 text-center text-sm text-ink/50">Cargando producto…</main></>
-if(message)return <><Nameplate/><main className="mx-auto max-w-6xl px-5 py-20"><div className="rounded-3xl border border-ink/10 bg-paper-soft p-10 text-center"><h2 className="font-display text-2xl font-bold">{message}</h2><Link to="/" className="mt-5 inline-flex rounded-full bg-ink px-5 py-3 text-sm font-semibold text-paper">Volver</Link></div></main></>
-if(!product)return null;const a=publicAvailability(product);const category=categories.find(c=>c.id===product.category_id)?.name||'General / Otros';const main=images[active]||images[0]
-return <div className="min-h-screen bg-paper text-ink"><Nameplate/><main className="mx-auto max-w-6xl px-5 py-8 sm:px-6"><button onClick={()=>window.history.back()} className="inline-flex items-center gap-2 text-sm font-semibold text-ink/55 hover:text-ink"><ArrowLeft size={16}/> Volver al catálogo</button><div className="mt-7 grid gap-8 lg:grid-cols-12 lg:gap-12"><section className="lg:col-span-7"><div className="overflow-hidden rounded-[28px] border border-ink/10 bg-paper-soft shadow-sm"><div className="aspect-square sm:aspect-[4/3]">{main?<img src={imageUrl(main.url)} alt={product.name} className="h-full w-full object-cover"/>:<div className="grid h-full place-items-center text-sm font-semibold text-ink/30">Sin foto</div>}</div></div>{images.length>1&&<div className="mt-3 flex gap-2 overflow-x-auto pb-1">{images.map((img,i)=><button key={img.id} onClick={()=>setActive(i)} className={`size-20 shrink-0 overflow-hidden rounded-xl border-2 ${i===active?'border-brand':'border-transparent'}`}><img src={imageUrl(img.url)} alt="" className="h-full w-full object-cover"/></button>)}</div>}</section><section className="lg:col-span-5 lg:py-4"><p className="text-xs font-bold uppercase tracking-[.16em] text-brand">{category}</p><h1 className="mt-3 font-display text-4xl font-bold leading-tight sm:text-5xl">{product.name}</h1><div className="mt-5 flex flex-wrap items-center gap-3"><span className="font-display text-3xl font-bold">${product.price}</span><StatusBadge label={a.label} variant={a.variant}/></div>{product.description&&<p className="mt-6 text-[15px] leading-7 text-ink-soft">{product.description}</p>}{(product.characteristics||product.color||product.size||product.shipping)&&<div className="mt-7 divide-y divide-ink/10 rounded-2xl border border-ink/10 bg-paper-soft">{product.characteristics&&<div className="p-4"><span className="text-xs font-bold uppercase tracking-wide text-ink/40">Características</span><p className="mt-1 text-sm">{product.characteristics}</p></div>}{product.color&&<div className="p-4"><span className="text-xs font-bold uppercase tracking-wide text-ink/40">Color</span><p className="mt-1 text-sm">{product.color}</p></div>}{product.size&&<div className="p-4"><span className="text-xs font-bold uppercase tracking-wide text-ink/40">Talla</span><p className="mt-1 text-sm">{product.size}</p></div>}{product.shipping&&<div className="flex gap-3 p-4"><Truck size={18} className="text-brand"/><div><span className="text-xs font-bold uppercase tracking-wide text-ink/40">Entrega</span><p className="mt-1 text-sm">A domicilio disponible</p></div></div>}</div>}<div className="mt-7 space-y-3">{product.whatsapp&&<a href={whatsappOrderLink(product.whatsapp,product.name)} target="_blank" rel="noreferrer" className="flex w-full items-center justify-center gap-2 rounded-full bg-whatsapp px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-green-900/10 hover:-translate-y-0.5"><MessageCircle size={18}/> Pedir por WhatsApp</a>}<button onClick={share} className="flex w-full items-center justify-center gap-2 rounded-full border border-ink/15 bg-paper-soft px-5 py-3.5 text-sm font-semibold hover:border-ink/30">{shared?<Check size={17}/>:<Share2 size={17}/>} {shared?'Enlace copiado':'Compartir producto'}</button></div></section></div></main><SiteFooter/></div>}
-export default Producto
+function Producto() {
+  const { productId } = useParams();
+  const [product, setProduct] = useState(null);
+  const [images, setImages] = useState([]);
+  const [active, setActive] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+  const [shared, setShared] = useState(false);
+  useEffect(() => {
+    (async () => {
+      try {
+        const r = await fetch(`${API_BASE}/api/products/item/${productId}`);
+        if (!r.ok) {
+          setMessage("No se encontró el producto.");
+          return;
+        }
+        const p = await r.json();
+        setProduct(p);
+        const [ir, cr] = await Promise.all([
+          fetch(`${API_BASE}/api/products/${productId}/images`),
+          fetch(`${API_BASE}/api/categories`),
+        ]);
+        if (ir.ok) setImages(await ir.json());
+        if (cr.ok) setCategories(await cr.json());
+      } catch {
+        setMessage("No se pudo cargar el producto.");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [productId]);
+  async function share() {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: product.name, url });
+      } catch {}
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setShared(true);
+      setTimeout(() => setShared(false), 1800);
+    } catch {}
+  }
+  if (loading)
+    return (
+      <>
+        <Nameplate />
+        <main className="mx-auto max-w-6xl px-5 py-20 text-center text-sm text-ink/50">
+          Cargando producto…
+        </main>
+      </>
+    );
+  if (message)
+    return (
+      <>
+        <Nameplate />
+        <main className="mx-auto max-w-6xl px-5 py-20">
+          <div className="rounded-3xl border border-ink/10 bg-paper-soft p-10 text-center">
+            <h2 className="font-display text-2xl font-bold">{message}</h2>
+            <Link
+              to="/"
+              className="mt-5 inline-flex rounded-full bg-ink px-5 py-3 text-sm font-semibold text-paper"
+            >
+              Volver
+            </Link>
+          </div>
+        </main>
+      </>
+    );
+  if (!product) return null;
+  const a = publicAvailability(product);
+  const category =
+    categories.find((c) => c.id === product.category_id)?.name ||
+    "General / Otros";
+  const main = images[active] || images[0];
+  return (
+    <div className="min-h-screen bg-paper text-ink">
+      <Nameplate />
+      <main className="mx-auto max-w-6xl px-5 py-8 sm:px-6">
+        <button
+          onClick={() => window.history.back()}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-ink/55 hover:text-ink"
+        >
+          <ArrowLeft size={16} /> Volver al catálogo
+        </button>
+        <div className="mt-7 grid gap-8 lg:grid-cols-12 lg:gap-12">
+          <section className="lg:col-span-7">
+            <div className="overflow-hidden rounded-[28px] border border-ink/10 bg-paper-soft shadow-sm">
+              <div className="aspect-square sm:aspect-[4/3]">
+                {main ? (
+                  <img
+                    src={imageUrl(main.url)}
+                    alt={product.name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="grid h-full place-items-center text-sm font-semibold text-ink/30">
+                    Sin foto
+                  </div>
+                )}
+              </div>
+            </div>
+            {images.length > 1 && (
+              <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                {images.map((img, i) => (
+                  <button
+                    key={img.id}
+                    onClick={() => setActive(i)}
+                    className={`size-20 shrink-0 overflow-hidden rounded-xl border-2 ${i === active ? "border-brand" : "border-transparent"}`}
+                  >
+                    <img
+                      src={imageUrl(img.url)}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+          <section className="lg:col-span-5 lg:py-4">
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-brand">
+              {category}
+            </p>
+            <h1 className="mt-3 font-display text-4xl font-bold leading-tight sm:text-5xl">
+              {product.name}
+            </h1>
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <span className="font-display text-3xl font-bold">
+                ${product.price}
+              </span>
+              <StatusBadge label={a.label} variant={a.variant} />
+            </div>
+            {product.description && (
+              <p className="mt-6 text-[15px] leading-7 text-ink-soft">
+                {product.description}
+              </p>
+            )}
+            {(product.characteristics ||
+              product.color ||
+              product.size ||
+              product.shipping) && (
+              <div className="mt-7 divide-y divide-ink/10 rounded-2xl border border-ink/10 bg-paper-soft">
+                {product.characteristics && (
+                  <div className="p-4">
+                    <span className="text-xs font-bold uppercase tracking-wide text-ink/40">
+                      Características
+                    </span>
+                    <p className="mt-1 text-sm">{product.characteristics}</p>
+                  </div>
+                )}
+                {product.color && (
+                  <div className="p-4">
+                    <span className="text-xs font-bold uppercase tracking-wide text-ink/40">
+                      Color
+                    </span>
+                    <p className="mt-1 text-sm">{product.color}</p>
+                  </div>
+                )}
+                {product.size && (
+                  <div className="p-4">
+                    <span className="text-xs font-bold uppercase tracking-wide text-ink/40">
+                      Talla
+                    </span>
+                    <p className="mt-1 text-sm">{product.size}</p>
+                  </div>
+                )}
+                {product.shipping && (
+                  <div className="flex gap-3 p-4">
+                    <Truck size={18} className="text-brand" />
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-wide text-ink/40">
+                        Entrega
+                      </span>
+                      <p className="mt-1 text-sm">A domicilio disponible</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="mt-7 space-y-3">
+              {product.whatsapp && (
+                <a
+                  href={whatsappOrderLink(product.whatsapp, product.name)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex w-full items-center justify-center gap-2 rounded-full bg-whatsapp px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-green-900/10 hover:-translate-y-0.5"
+                >
+                  <MessageCircle size={18} /> Pedir por WhatsApp
+                </a>
+              )}
+              <button
+                onClick={share}
+                className="flex w-full items-center justify-center gap-2 rounded-full border border-ink/15 bg-paper-soft px-5 py-3.5 text-sm font-semibold hover:border-ink/30"
+              >
+                {shared ? <Check size={17} /> : <Share2 size={17} />}{" "}
+                {shared ? "Enlace copiado" : "Compartir producto"}
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+export default Producto;

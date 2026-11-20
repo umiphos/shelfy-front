@@ -72,7 +72,9 @@ p {
   color: var(--indigo);
   border-bottom: 1px solid var(--indigo-soft);
   padding-bottom: 1px;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .link:hover {
@@ -128,7 +130,9 @@ p {
 .nameplate__nav a {
   padding-bottom: 3px;
   border-bottom: 1px solid transparent;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .nameplate__nav a:hover {
@@ -207,8 +211,11 @@ p {
   font-size: var(--fs-200);
   font-weight: 600;
   line-height: 1;
-  transition: background 0.15s ease, border-color 0.15s ease,
-    color 0.15s ease, transform 0.05s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.05s ease;
   min-height: 44px;
 }
 
@@ -320,7 +327,9 @@ p {
   color: var(--ink);
   outline: none;
   min-height: 46px;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .field textarea {
@@ -721,7 +730,7 @@ p {
 }
 
 .landing__hero::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   bottom: 0;
@@ -768,7 +777,7 @@ p {
 }
 
 .landing__hero-visual::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -836,7 +845,9 @@ p {
   padding: 10px 14px;
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
   box-shadow: 0 8px 20px rgb(33 29 23 / 10%);
 }
 
