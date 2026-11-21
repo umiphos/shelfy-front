@@ -111,7 +111,7 @@ function Producto() {
                   <img
                     src={imageUrl(main.url)}
                     alt={product.name}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain object-center"
                   />
                 ) : (
                   <div className="grid h-full place-items-center text-sm font-semibold text-ink/30">
